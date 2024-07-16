@@ -1,0 +1,4 @@
+go mod init example/folder
+go mod tidy
+go run main.go
+go build main.go
