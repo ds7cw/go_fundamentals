@@ -1,0 +1,5 @@
+Bill breakdown:
+juice:                    ...$2.00
+bread:                    ...$4.00
+tip:                      ...$1
+total:                    ...$7.00

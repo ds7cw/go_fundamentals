@@ -1,0 +1,7 @@
+Bill breakdown:
+eggs:                     ...$2.29
+bread:                    ...$1.50
+lucozade:                 ...$1.49
+chicken:                  ...$3.85
+tip:                      ...$0.75
+total:                    ...$9.88
