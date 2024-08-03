@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // Pointers - shared, not copied
 // Values - copied, not shared
 
@@ -62,6 +64,60 @@ package main
 // The use of new has nothing to do with it
 // Build with the flag -gcflags -m=2 to see the escape analysis
 
+// For loops
+// The value returned by range is always a copy
+// for i, thing := range things { thing is a copy}
+// Use the index if you need to mutate the element
+// for i := range things { things[i].which = whatever }
+// the change in the 2nd loop will be visible after the loop
+
+// Slice safety
+// Anytime a func mutates a slice that's passed in,
+// we must return a copy
+// func update(things []thing) []thing {
+// 	things = append(things, x)
+// 	return things
+// }
+// That's because the slice's backing array may be
+// reallocated to grow
+
+// Keeping a pointer to an element of a slice is risky
+type user struct {
+	name  string
+	count int
+}
+
+func addTo(u *user) { u.count++ }
+
 func main() {
+	users := []user{{"alice", 0}, {"bob", 0}}
+	alice := &users[0] // risky
+	amy := user{"amy", 1}
+	users = append(users, amy)
+
+	addTo(alice)       // alice is likely a stale pointer
+	fmt.Println(users) // so alice's count will be 0
+	// [{alice 0} {bob 0} {amy 1}]
+
+	items := [][2]byte{{1, 2}, {3, 4}, {5, 6}}
+	a := [][]byte{}
+
+	for _, item := range items {
+		a = append(a, item[:])
+	}
+	fmt.Println(items) // [[1 2] [3 4] [5 6]]
+	fmt.Println(a)     // [[1 2] [3 4] [5 6]]
 
 }
+
+// Taking the address of a mutating loop variable is wrong
+// func (r OfferResolver) Changes() []ChangeResolver {
+// 	var result []ChangeResolver
+// 	// wrong
+// 	for _, change := range r.d.Status.Changes {
+// 		result = append(result, ChangeResolver{&change}) // WRONG
+// 	}
+// 	return result
+// }
+// Wrong: all the returned resolvers point to the last change
+// in the list
