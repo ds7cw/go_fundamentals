@@ -28,13 +28,13 @@ func (r *RedisRepo) Insert(ctx context.Context, order model.Order) error {
 
 	txn := r.Client.TxPipeline()
 
-	res := r.Client.SetNX(ctx, key, string(data), 0)
+	res := txn.SetNX(ctx, key, string(data), 0)
 	if err := res.Err(); err != nil {
 		txn.Discard()
 		return fmt.Errorf("failed to set: %w", err)
 	}
 
-	if err := r.Client.SAdd(ctx, "orders", key).Err(); err != nil {
+	if err := txn.SAdd(ctx, "orders", key).Err(); err != nil {
 		txn.Discard()
 		return fmt.Errorf("failed to add to orders set: %w", err)
 	}
@@ -72,7 +72,7 @@ func (r *RedisRepo) DeleteByID(ctx context.Context, id uint64) error {
 
 	txn := r.Client.TxPipeline()
 
-	err := r.Client.Del(ctx, key).Err()
+	err := txn.Del(ctx, key).Err()
 	if errors.Is(err, redis.Nil) {
 		txn.Discard()
 		return ErrNotExist
@@ -112,8 +112,8 @@ func (r *RedisRepo) Update(ctx context.Context, order model.Order) error {
 }
 
 type FindAllPage struct {
-	Size   uint
-	Offset uint
+	Size   uint64
+	Offset uint64
 }
 
 type FindResult struct {
@@ -122,7 +122,7 @@ type FindResult struct {
 }
 
 func (r *RedisRepo) FindAll(ctx context.Context, page FindAllPage) (FindResult, error) {
-	res := r.Client.SScan(ctx, "orders", uint64(page.Offset), "*", int64(page.Size))
+	res := r.Client.SScan(ctx, "orders", page.Offset, "*", int64(page.Size))
 
 	keys, cursor, err := res.Result()
 	if err != nil {

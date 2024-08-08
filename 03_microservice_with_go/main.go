@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	app := application.New()
+	app := application.New(application.LoadConfig())
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	// cancel called at the end of the main func execution
@@ -32,4 +32,15 @@ func main() {
 	// redis-cli/ redis-cli shutdown
 	// sudo service redis-server stop/ start/ restart
 
+	// curl -X POST -d '{"customer_id":"'$(uuidgen)'","line_items":[{"item_id":"'$(uuidgen)'","quantity":5,"price":1999}]}' localhost:3000/orders
+
+	// SERVER_PORT=8080 go run main.go
+	// 	curl localhost:8080
+	// 	curl localhost:8080/orders | jq
+	//  % Total    % Received % Xferd  Average Speed   Time    Time
+	// 	Time  Current                  Dload  Upload   Total   Spent
+	// 	Left  Speed
+	// 	0     0    0     0    0     0      0      0 --:--:-- --:--:--
+	// 	-100 12  100    12    0     0     37      0 --:--:-- --:--:--
+	// 	--:--:--    37
 }
