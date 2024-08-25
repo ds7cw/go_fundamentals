@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
 </head>
 <body>
+    {{if .Error}}
+    <p style="color: red;">{{.Error}}</p>
+    {{end}}
     <form method="POST" action="/login">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>

@@ -2,12 +2,13 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -51,7 +52,20 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	username := session.Values["username"].(string)
-	fmt.Fprintf(w, "Hello, %s!", username)
+
+	tmpl, err := template.ParseFiles("templates/home.html")
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Username string
+	}{
+		Username: username,
+	}
+
+	tmpl.Execute(w, data)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -61,8 +75,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		var dbUsername, dbPassword string
 		err := db.QueryRow("SELECT username, password FROM users WHERE username = ?", username).Scan(&dbUsername, &dbPassword)
-		if err != nil || dbPassword != password {
-			http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+		if err != nil || bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password)) != nil {
+			http.Redirect(w, r, "/login?error=Invalid+username+or+password", http.StatusFound)
 			return
 		}
 
@@ -73,7 +87,19 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
-	http.ServeFile(w, r, "login.html")
+	errorMessage := r.URL.Query().Get("error")
+	data := struct {
+		Error string
+	}{
+		Error: errorMessage,
+	}
+
+	tmpl, err := template.ParseFiles("templates/login.html")
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	tmpl.Execute(w, data)
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +114,14 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 
-		_, err := db.Exec("INSERT INTO users (username, password) VALUES (?, ?)", username, password)
+		// Hash the password
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		_, err = db.Exec("INSERT INTO users (username, password) VALUES (?, ?)", username, string(hashedPassword))
 		if err != nil {
 			http.Error(w, "Username already exists", http.StatusConflict)
 			return
@@ -97,5 +130,5 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusFound)
 		return
 	}
-	http.ServeFile(w, r, "register.html")
+	http.ServeFile(w, r, "templates/register.html")
 }
