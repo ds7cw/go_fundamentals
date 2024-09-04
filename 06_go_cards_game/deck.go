@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -69,5 +70,35 @@ func (d deck) shuffle() {
 	for i := range d {
 		newPos := r.Intn((len(d) - 1))
 		d[i], d[newPos] = d[newPos], d[i]
+	}
+}
+
+func getPlayerCount() int {
+	return rand.Intn(7) + 2
+}
+
+func createPlayers(n int) map[string]deck {
+	playerMap := map[string]deck{}
+
+	for i := 1; i <= n; i++ {
+		currentPlayer := "Player" + strconv.Itoa(i)
+		playerMap[currentPlayer] = deck{}
+	}
+
+	return playerMap
+}
+
+func dealToPlayers(m map[string]deck, d deck) map[string]deck {
+	for key, _ := range m {
+		m[key], d = deal(d, 5)
+		m[key].print()
+	}
+
+	return m
+}
+
+func printPlayersHands(m map[string]deck) {
+	for key, val := range m {
+		fmt.Println(key, val)
 	}
 }
