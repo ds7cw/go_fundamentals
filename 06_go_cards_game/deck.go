@@ -88,17 +88,46 @@ func createPlayers(n int) map[string]deck {
 	return playerMap
 }
 
-func dealToPlayers(m map[string]deck, d deck) map[string]deck {
+func dealToPlayers(m map[string]deck, d deck) (map[string]deck, deck) {
 	for key, _ := range m {
-		m[key], d = deal(d, 5)
-		m[key].print()
+		m[key], d = deal(d, 2)
 	}
 
-	return m
+	return m, d
 }
 
 func printPlayersHands(m map[string]deck) {
 	for key, val := range m {
 		fmt.Println(key, val)
 	}
+}
+
+func dealFlop(d deck) (deck, deck) {
+	burn, lessBurn := deal(d, 1)
+	flop, remaining := deal(lessBurn, 3)
+
+	fmt.Println("Burn at Flop:", burn)
+	fmt.Println("Flop Cards:", flop)
+
+	return flop, remaining
+}
+
+func dealTurn(d deck) (deck, deck) {
+	burn, lessBurn := deal(d, 1)
+	turn, remaining := deal(lessBurn, 1)
+
+	fmt.Println("Burn at Turn:", burn)
+	fmt.Println("Turn Card:", turn)
+
+	return turn, remaining
+}
+
+func dealRiver(d deck) (deck, deck) {
+	burn, lessBurn := deal(d, 1)
+	river, remaining := deal(lessBurn, 1)
+
+	fmt.Println("Burn at River:", burn)
+	fmt.Println("River Card:", river)
+
+	return river, remaining
 }

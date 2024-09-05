@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 func main() {
 	cards := newDeck()
@@ -8,12 +11,19 @@ func main() {
 	cards.print()
 
 	playersCount := getPlayerCount()
-	fmt.Println(playersCount)
+	fmt.Println("\nPlayers Count:", playersCount)
 
 	playersMap := createPlayers(playersCount)
-	fmt.Println(playersMap)
 
-	playersMap = dealToPlayers(playersMap, cards)
+	playersMap, cards = dealToPlayers(playersMap, cards)
 	printPlayersHands(playersMap)
+
+	flop, cards := dealFlop(cards)
+	turn, cards := dealTurn(cards)
+	river, cards := dealRiver(cards)
+	communityCards := slices.Concat(flop, turn, river)
+
+	fmt.Println("\nCommunity Cards:\n", communityCards)
+	fmt.Println("\nRemaining Cards in Deck:", len(cards))
 
 }
