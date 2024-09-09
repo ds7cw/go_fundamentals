@@ -27,12 +27,13 @@ func TestNewDeck(t *testing.T) {
 		// PASS
 		// ok      cards   0.219s
 	}
-
-	if d[0] != "Ace of Spades" {
+	first_card := card{"Spades", "2", 1}
+	if d[0] != first_card {
 		t.Errorf("Expected first card of Ace of Spades, but got %v", d[0])
 	}
 
-	if d[len(d)-1] != "King of Clubs" {
+	last_card := card{"Clubs", "Ace", 52}
+	if d[len(d)-1] != last_card {
 		t.Errorf("Expected first card of King of Clubs, but got %v", d[len(d)-1])
 	}
 }
@@ -70,11 +71,13 @@ func TestDeal(t *testing.T) {
 		t.Errorf("Expected 52 cards in remaining deck, got %v", len(remaining))
 	}
 
-	if hand[0] != "Ace of Spades" {
+	first_card := card{"Spades", "2", 1}
+	if hand[0] != first_card {
 		t.Errorf("Expected first card of Ace of Spades, but got %v", hand[0])
 	}
 
-	if remaining[len(remaining)-1] != "King of Clubs" {
+	last_card := card{"Clubs", "Ace", 52}
+	if remaining[len(remaining)-1] != last_card {
 		t.Errorf("Expected first card of King of Clubs, but got %v", remaining[len(remaining)-1])
 	}
 }

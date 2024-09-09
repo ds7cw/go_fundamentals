@@ -9,22 +9,32 @@ import (
 	"time"
 )
 
+type card struct {
+	suit  string
+	value string
+	rank  int
+}
+
 // Create a new type of 'deck'
 // which is a slice of strings
-type deck []string
+type deck []card
 
 func newDeck() deck {
 	cards := deck{}
 	cardSuits := []string{"Spades", "Diamonds", "Hearts", "Clubs"}
 	cardValues := []string{
-		"Ace", "Two", "Three", "Four", "Five",
-		"Six", "Seven", "Eight", "Nine", "Ten",
-		"Jack", "Queen", "King",
+		"2", "3", "4", "5",
+		"6", "7", "8", "9", "10",
+		"Jack", "Queen", "King", "Ace",
 	}
 
-	for _, suit := range cardSuits {
-		for _, value := range cardValues {
-			cards = append(cards, value+" of "+suit)
+	i := 1
+
+	for _, value := range cardValues {
+		for _, suit := range cardSuits {
+			crd := card{suit: suit, value: value, rank: i}
+			cards = append(cards, crd)
+			i += 1
 		}
 	}
 
@@ -43,7 +53,12 @@ func deal(d deck, handSize int) (deck, deck) {
 }
 
 func (d deck) toString() string {
-	return strings.Join([]string(d), ",")
+	var string_deck []string
+
+	for _, el := range d {
+		string_deck = append(string_deck, el.value+" of "+el.suit+" "+strconv.Itoa(el.rank))
+	}
+	return strings.Join([]string(string_deck), ",")
 }
 
 func (d deck) saveToFile(filename string) error {
@@ -60,7 +75,22 @@ func newDeckFromFile(filename string) deck {
 	}
 
 	s := strings.Split(string(bs), ",")
-	return deck(s)
+	d := deck{}
+
+	for _, el := range s {
+		sub_el := strings.Split(el, " ")
+		card_val := sub_el[0]
+		card_suit := sub_el[2]
+		card_rank, err := strconv.Atoi(sub_el[3])
+		if err != nil {
+			fmt.Println("Error:", err)
+			os.Exit(1)
+		}
+
+		crd := card{suit: card_suit, value: card_val, rank: card_rank}
+		d = append(d, crd)
+	}
+	return d
 }
 
 func (d deck) shuffle() {
@@ -89,7 +119,7 @@ func createPlayers(n int) map[string]deck {
 }
 
 func dealToPlayers(m map[string]deck, d deck) (map[string]deck, deck) {
-	for key, _ := range m {
+	for key := range m {
 		m[key], d = deal(d, 2)
 	}
 
@@ -98,7 +128,9 @@ func dealToPlayers(m map[string]deck, d deck) (map[string]deck, deck) {
 
 func printPlayersHands(m map[string]deck) {
 	for key, val := range m {
-		fmt.Println(key, val)
+		fmt.Println(
+			key, "|", val[0].value, "of", val[0].suit,
+			"|", val[1].value, "of", val[1].suit)
 	}
 }
 
