@@ -26,4 +26,5 @@ func main() {
 	fmt.Println("\nCommunity Cards:\n", communityCards)
 	fmt.Println("\nRemaining Cards in Deck:", len(cards))
 
+	fmt.Println("Evaluate hand:", communityCards.evaluateHand())
 }

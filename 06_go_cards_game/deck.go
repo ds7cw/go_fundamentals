@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+const SuitSpades string = "Spades"
+const SuitDiamonds string = "Diamonds"
+const SuitHearts string = "Hearts"
+const SuitClubs string = "Clubs"
+
 type card struct {
 	suit  string
 	value string
@@ -16,26 +21,26 @@ type card struct {
 }
 
 // Create a new type of 'deck'
-// which is a slice of strings
+// which is a slice of card structs
 type deck []card
 
 func newDeck() deck {
 	cards := deck{}
-	cardSuits := []string{"Spades", "Diamonds", "Hearts", "Clubs"}
+	cardSuits := []string{SuitClubs, SuitDiamonds, SuitHearts, SuitSpades}
 	cardValues := []string{
 		"2", "3", "4", "5",
 		"6", "7", "8", "9", "10",
 		"Jack", "Queen", "King", "Ace",
 	}
 
-	i := 1
+	i := 2
 
 	for _, value := range cardValues {
 		for _, suit := range cardSuits {
 			crd := card{suit: suit, value: value, rank: i}
 			cards = append(cards, crd)
-			i += 1
 		}
+		i += 1
 	}
 
 	return cards
