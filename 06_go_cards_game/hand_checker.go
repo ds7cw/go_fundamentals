@@ -2,14 +2,14 @@ package main
 
 // 10 royal flush: 		As Ks Qs Js 10s
 // 9 straight flush: 	Jc 10c 9c 8c 7c
-// 8 four of a kind:		9 9 9 9 [K]
-// 7 full house:			A A A 3 3
+// 8 four of a kind:	9 9 9 9 [K]
+// 7 full house:		A A A 3 3
 // 6 flush:				Kc 10c 8c 7c 5c
 // 5 straight:			10h 9c 8d 7c 6h
 // 4 three of a kind:	7 7 7 [Q 3]
 // 3 two pair:			J J 5 5 [7]
 // 2 pair:				A A [K J 7]
-// 1 high card:		K [8 Q 2 7]
+// 1 high card:			K [8 Q 2 7]
 
 type handResult struct {
 	handId       int
@@ -18,43 +18,44 @@ type handResult struct {
 }
 
 func (d deck) evaluateHand() handResult {
-	if pair := d.hasPair(); pair.handId == 2 {
-		return pair
-	}
 
-	if twoPair := d.hasTwoPair(); twoPair.handId == 3 {
-		return twoPair
-	}
-
-	if three := d.hasThree(); three.handId == 4 {
-		return three
-	}
-
-	if straight := d.hasStraight(); straight.handId == 5 {
-		return straight
-	}
-
-	if flush := d.hasFlush(); flush.handId == 6 {
-		return flush
-	}
-
-	if house := d.hasFullHouse(); house.handId == 7 {
-		return house
-	}
-
-	if four := d.hasFour(); four.handId == 8 {
-		return four
+	if rFlush := d.hasRoyalFlush(); rFlush.handId == 10 {
+		return rFlush
 	}
 
 	if sFlush := d.hasStraightFlush(); sFlush.handId == 9 {
 		return sFlush
 	}
 
-	if rFlush := d.hasRoyalFlush(); rFlush.handId == 10 {
-		return rFlush
+	if four := d.hasFour(); four.handId == 8 {
+		return four
 	}
 
-	return d.getHighCard()
+	if house := d.hasFullHouse(); house.handId == 7 {
+		return house
+	}
+
+	if flush := d.hasFlush(); flush.handId == 6 {
+		return flush
+	}
+
+	if straight := d.hasStraight(); straight.handId == 5 {
+		return straight
+	}
+
+	if three := d.hasThree(); three.handId == 4 {
+		return three
+	}
+
+	if twoPair := d.hasTwoPair(); twoPair.handId == 3 {
+		return twoPair
+	}
+
+	if pair := d.hasPair(); pair.handId == 2 {
+		return pair
+	}
+
+	return handResult{handId: 1, handScore: 0, handHighCard: d.getHighCard()}
 }
 
 func (d deck) hasRoyalFlush() handResult {
@@ -102,7 +103,14 @@ func (d deck) hasPair() handResult {
 	return hr
 }
 
-func (d deck) getHighCard() handResult {
-	hr := handResult{handId: 1, handScore: 0, handHighCard: card{suit: SuitSpades, value: "Ace", rank: 13}}
-	return hr
+func (d deck) getHighCard() card {
+	hc := d[0]
+	last_idx := len(d) - 1
+
+	for i := 1; i <= last_idx; i++ {
+		if d[i].rank > hc.rank {
+			hc = d[i]
+		}
+	}
+	return hc
 }
