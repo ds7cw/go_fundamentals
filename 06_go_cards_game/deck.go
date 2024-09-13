@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -167,4 +168,14 @@ func dealRiver(d deck) (deck, deck) {
 	fmt.Println("River Card:", river)
 
 	return river, remaining
+}
+
+func compareCardRank(d deck) func(i, j int) bool {
+	return func(i, j int) bool {
+		return d[i].rank > d[j].rank
+	}
+}
+
+func (d deck) sortDeck() {
+	sort.Slice(d, compareCardRank(d))
 }
