@@ -97,8 +97,28 @@ func (d deck) hasStraight() handResult {
 }
 
 func (d deck) hasThree() handResult {
-	hr := handResult{combinationId: ThreeKindId, playerHand: d[:5]}
-	return hr
+	cardCounter := make(map[string][]int)
+	bestHand := deck{} // the player's five best cards
+
+	for idx, c := range d {
+		if cardSlice, ok := cardCounter[c.value]; ok {
+			if len(cardSlice) == 2 { // found three of a kind
+				firstInstIdx := cardCounter[c.value][0]  // get 1st instance index
+				secondInstIdx := cardCounter[c.value][1] // get 2nd instance index
+				// add the three cards to the players 5-card hand
+				bestHand = append(bestHand, d[firstInstIdx], d[secondInstIdx], d[idx])
+				bestHand = bestHand.addHighCards(d, []string{c.value})
+				return handResult{combinationId: ThreeKindId, playerHand: bestHand}
+
+			} else { // found second instance
+				cardCounter[c.value] = append(cardSlice, idx)
+			}
+		} else { // found first instance
+			cardCounter[c.value] = []int{idx}
+		}
+	}
+
+	return handResult{combinationId: NotMatchId, playerHand: d[:5]}
 }
 
 func (d deck) hasTwoPair() handResult {
