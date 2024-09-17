@@ -77,8 +77,26 @@ func (d deck) hasStraightFlush() handResult {
 }
 
 func (d deck) hasFour() handResult {
-	hr := handResult{combinationId: FourKindId, playerHand: d[:5]}
-	return hr
+	cardCounter := make(map[string][]int)
+
+	for idx, c := range d {
+		if cardSlice, ok := cardCounter[c.value]; ok {
+			if len(cardSlice) == 3 { // found four of a kind
+				cardCounter[c.value] = append(cardSlice, idx)
+				// // add the four cards to the players 5-card hand
+				bestHand := addCombinationCards(d, cardCounter[c.value])
+				bestHand = bestHand.addHighCards(d, []string{c.value})
+				return handResult{combinationId: FourKindId, playerHand: bestHand}
+
+			} else { // found second or third instance
+				cardCounter[c.value] = append(cardSlice, idx)
+			}
+		} else { // found first instance
+			cardCounter[c.value] = []int{idx}
+		}
+	}
+
+	return handResult{combinationId: NotMatchId, playerHand: d[:5]}
 }
 
 func (d deck) hasFullHouse() handResult {
@@ -156,4 +174,15 @@ func (fiveDeck deck) addHighCards(sevenDeck deck, valsToAvoid []string) deck {
 		}
 	}
 	return fiveDeck
+}
+
+// returns a deck with cards from a matching combination
+// three of a kind example: 3 of clubs + 3 of hearts + 3 of spades
+func addCombinationCards(d deck, idxSlice []int) deck {
+	result := deck{}
+	for _, idx := range idxSlice {
+		result = append(result, d[idx])
+	}
+
+	return result
 }
