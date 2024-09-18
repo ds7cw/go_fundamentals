@@ -76,20 +76,21 @@ func (d deck) hasStraightFlush() handResult {
 	return hr
 }
 
+// Checks for a four of a kind card combination.
 func (d deck) hasFour() handResult {
 	cardCounter := make(map[string][]int)
 
 	for idx, c := range d {
 		if cardSlice, ok := cardCounter[c.value]; ok {
-			if len(cardSlice) == 3 { // found four of a kind
+			// add new instance idx to the relevant slice
+			cardCounter[c.value] = append(cardSlice, idx)
+			if len(cardCounter[c.value]) == 4 { // found four of a kind
 				cardCounter[c.value] = append(cardSlice, idx)
-				// // add the four cards to the players 5-card hand
+
+				// add the four of a king to the players 5-card hand
 				bestHand := addCombinationCards(d, cardCounter[c.value])
 				bestHand = bestHand.addHighCards(d, []string{c.value})
 				return handResult{combinationId: FourKindId, playerHand: bestHand}
-
-			} else { // found second or third instance
-				cardCounter[c.value] = append(cardSlice, idx)
 			}
 		} else { // found first instance
 			cardCounter[c.value] = []int{idx}
@@ -114,23 +115,21 @@ func (d deck) hasStraight() handResult {
 	return hr
 }
 
+// Checks for a three of a kind card combination.
 func (d deck) hasThree() handResult {
 	cardCounter := make(map[string][]int)
-	bestHand := deck{} // the player's five best cards
 
 	for idx, c := range d {
 		if cardSlice, ok := cardCounter[c.value]; ok {
-			if len(cardSlice) == 2 { // found three of a kind
-				firstInstIdx := cardCounter[c.value][0]  // get 1st instance index
-				secondInstIdx := cardCounter[c.value][1] // get 2nd instance index
-				// add the three cards to the players 5-card hand
-				bestHand = append(bestHand, d[firstInstIdx], d[secondInstIdx], d[idx])
+			// add new instance idx to the relevant slice
+			cardCounter[c.value] = append(cardSlice, idx)
+			if len(cardCounter[c.value]) == 3 { // found three of a kind
+				// add the three of a king to the players 5-card hand
+				bestHand := addCombinationCards(d, cardCounter[c.value])
 				bestHand = bestHand.addHighCards(d, []string{c.value})
 				return handResult{combinationId: ThreeKindId, playerHand: bestHand}
-
-			} else { // found second instance
-				cardCounter[c.value] = append(cardSlice, idx)
 			}
+
 		} else { // found first instance
 			cardCounter[c.value] = []int{idx}
 		}
@@ -144,19 +143,22 @@ func (d deck) hasTwoPair() handResult {
 	return hr
 }
 
+// Checks for a single pair card combination.
 func (d deck) hasPair() handResult {
-	uniques := make(map[string][]int)
-	bestHand := deck{} // the player's five best cards
+	cardCounter := make(map[string][]int)
 
 	for idx, c := range d {
-		if _, ok := uniques[c.value]; ok {
-			firstInstIdx := uniques[c.value][0]                    // get the 1st instance index
-			bestHand = append(bestHand, c, d[firstInstIdx])        // append the 1st and 2nd instances
-			bestHand = bestHand.addHighCards(d, []string{c.value}) // append the 3 highest remaining cards
+		if cardSlice, ok := cardCounter[c.value]; ok {
+			// add second instance idx to the relevant slice
+			cardCounter[c.value] = append(cardSlice, idx)
+			bestHand := addCombinationCards(d, cardCounter[c.value])
+
+			// append the 3 highest remaining cards
+			bestHand = bestHand.addHighCards(d, []string{c.value})
 			return handResult{combinationId: SinglePairId, playerHand: bestHand}
 		}
 
-		uniques[c.value] = []int{idx}
+		cardCounter[c.value] = []int{idx}
 	}
 
 	return handResult{combinationId: NotMatchId, playerHand: d[:5]}
@@ -176,8 +178,8 @@ func (fiveDeck deck) addHighCards(sevenDeck deck, valsToAvoid []string) deck {
 	return fiveDeck
 }
 
-// returns a deck with cards from a matching combination
-// three of a kind example: 3 of clubs + 3 of hearts + 3 of spades
+// Returns a deck with cards from a matching combination.
+// Three of a kind example: 3 of clubs + 3 of hearts + 3 of spades
 func addCombinationCards(d deck, idxSlice []int) deck {
 	result := deck{}
 	for _, idx := range idxSlice {
