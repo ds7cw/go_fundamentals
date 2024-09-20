@@ -18,8 +18,11 @@ const HighCardId int = 1      // K [8 Q 2 7]
 const NotMatchId int = 0      // Ah 4s 9d Qc 6h
 
 type handResult struct {
-	combinationId int
-	playerHand    deck
+	combinationId     int
+	playerHand        deck
+	combinationValues []string
+	// a slice of unique card values, forming a combination.
+	// Full house of AAAKK holds the following values [A K]
 }
 
 func (d deck) evaluateHand() handResult {
@@ -36,6 +39,8 @@ func (d deck) evaluateHand() handResult {
 	}
 
 	if four := d.hasFour(); four.combinationId == FourKindId {
+		// append 1 highest remaining card
+		four.playerHand.addHighCards(d, four.combinationValues)
 		return four
 	}
 
@@ -52,6 +57,8 @@ func (d deck) evaluateHand() handResult {
 	}
 
 	if three := d.hasThree(); three.combinationId == ThreeKindId {
+		// append the 2 highest remaining cards
+		three.playerHand.addHighCards(d, three.combinationValues)
 		return three
 	}
 
@@ -60,6 +67,8 @@ func (d deck) evaluateHand() handResult {
 	}
 
 	if pair := d.hasPair(); pair.combinationId == SinglePairId {
+		// append the 3 highest remaining cards
+		pair.playerHand.addHighCards(d, pair.combinationValues)
 		return pair
 	}
 
@@ -87,17 +96,21 @@ func (d deck) hasFour() handResult {
 			if len(cardCounter[c.value]) == 4 { // found four of a kind
 				cardCounter[c.value] = append(cardSlice, idx)
 
-				// add the four of a king to the players 5-card hand
+				// add the four of a kind to the players 5-card hand
 				bestHand := addCombinationCards(d, cardCounter[c.value])
-				bestHand = bestHand.addHighCards(d, []string{c.value})
-				return handResult{combinationId: FourKindId, playerHand: bestHand}
+
+				return handResult{
+					combinationId:     FourKindId,
+					playerHand:        bestHand,
+					combinationValues: []string{c.value},
+				}
 			}
 		} else { // found first instance
 			cardCounter[c.value] = []int{idx}
 		}
 	}
 
-	return handResult{combinationId: NotMatchId, playerHand: d[:5]}
+	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
 }
 
 func (d deck) hasFullHouse() handResult {
@@ -124,10 +137,14 @@ func (d deck) hasThree() handResult {
 			// add new instance idx to the relevant slice
 			cardCounter[c.value] = append(cardSlice, idx)
 			if len(cardCounter[c.value]) == 3 { // found three of a kind
-				// add the three of a king to the players 5-card hand
+				// add the three of a kind to the players 5-card hand
 				bestHand := addCombinationCards(d, cardCounter[c.value])
-				bestHand = bestHand.addHighCards(d, []string{c.value})
-				return handResult{combinationId: ThreeKindId, playerHand: bestHand}
+
+				return handResult{
+					combinationId:     ThreeKindId,
+					playerHand:        bestHand,
+					combinationValues: []string{c.value},
+				}
 			}
 
 		} else { // found first instance
@@ -135,7 +152,7 @@ func (d deck) hasThree() handResult {
 		}
 	}
 
-	return handResult{combinationId: NotMatchId, playerHand: d[:5]}
+	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
 }
 
 func (d deck) hasTwoPair() handResult {
@@ -153,29 +170,30 @@ func (d deck) hasPair() handResult {
 			cardCounter[c.value] = append(cardSlice, idx)
 			bestHand := addCombinationCards(d, cardCounter[c.value])
 
-			// append the 3 highest remaining cards
-			bestHand = bestHand.addHighCards(d, []string{c.value})
-			return handResult{combinationId: SinglePairId, playerHand: bestHand}
+			return handResult{
+				combinationId:     SinglePairId,
+				playerHand:        bestHand,
+				combinationValues: []string{c.value},
+			}
 		}
-
+		// found first instance
 		cardCounter[c.value] = []int{idx}
 	}
 
-	return handResult{combinationId: NotMatchId, playerHand: d[:5]}
+	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
 }
 
 func (d deck) getHighCard() card {
 	return d[0]
 }
 
-func (fiveDeck deck) addHighCards(sevenDeck deck, valsToAvoid []string) deck {
-	for i := 0; len(fiveDeck) < 5; i++ {
+func (fiveDeck *deck) addHighCards(sevenDeck deck, valsToAvoid []string) {
+	for i := 0; len(*fiveDeck) < 5; i++ {
 		// slices.Contains() method introduced in go 1.21
 		if !slices.Contains(valsToAvoid, sevenDeck[i].value) {
-			fiveDeck = append(fiveDeck, sevenDeck[i])
+			*fiveDeck = append(*fiveDeck, sevenDeck[i])
 		}
 	}
-	return fiveDeck
 }
 
 // Returns a deck with cards from a matching combination.
