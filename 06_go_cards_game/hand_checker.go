@@ -113,11 +113,33 @@ func (d deck) hasFour() handResult {
 	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
 }
 
+// Checks for a full house card combination.
 func (d deck) hasFullHouse() handResult {
-	hr := handResult{combinationId: FullHouseId, playerHand: d[:5]}
-	return hr
+	threeOfAKind := d.hasThree()
+
+	if threeOfAKind.combinationId != ThreeKindId {
+		return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
+	}
+
+	// remove the three of a kind cards from deck
+	deckWithoutThreeKind := d.removeFromDeck(threeOfAKind.combinationValues)
+	twoOfAKind := deckWithoutThreeKind.hasPair()
+
+	// check remaining 4 cards for a two of a kind
+	if twoOfAKind.combinationId != SinglePairId {
+		return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
+	}
+
+	fullHouseDeck := slices.Concat(threeOfAKind.playerHand, twoOfAKind.playerHand)
+
+	return handResult{
+		combinationId:     FullHouseId,
+		playerHand:        fullHouseDeck,
+		combinationValues: []string{},
+	}
 }
 
+// Checks for a flush card combination.
 func (d deck) hasFlush() handResult {
 	cardCounter := make(map[string][]int)
 
@@ -201,7 +223,7 @@ func (d deck) hasPair() handResult {
 		cardCounter[c.value] = []int{idx}
 	}
 
-	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
+	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
 func (d deck) getHighCard() card {
@@ -226,4 +248,17 @@ func addCombinationCards(d deck, idxSlice []int) deck {
 	}
 
 	return result
+}
+
+func (d deck) removeFromDeck(valuesToRemove []string) deck {
+	subDeck := deck{}
+
+	for _, el := range d {
+		if !slices.Contains(valuesToRemove, el.value) {
+			// if current card value not among the values to remove
+			subDeck = append(subDeck, el)
+		}
+	}
+
+	return subDeck
 }
