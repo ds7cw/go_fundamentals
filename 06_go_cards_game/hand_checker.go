@@ -119,8 +119,29 @@ func (d deck) hasFullHouse() handResult {
 }
 
 func (d deck) hasFlush() handResult {
-	hr := handResult{combinationId: FlushId, playerHand: d[:5]}
-	return hr
+	cardCounter := make(map[string][]int)
+
+	for idx, c := range d {
+		if cardSlice, ok := cardCounter[c.suit]; ok {
+			// add new instance idx to the relevant slice
+			cardCounter[c.suit] = append(cardSlice, idx)
+
+			if len(cardCounter[c.suit]) == 5 {
+				// 5 cards of the same suit found
+				bestHand := addCombinationCards(d, cardCounter[c.suit])
+
+				return handResult{
+					combinationId:     FlushId,
+					playerHand:        bestHand,
+					combinationValues: []string{},
+				}
+			}
+		} else { // first encounter of current suit
+			cardCounter[c.suit] = []int{idx}
+		}
+	}
+
+	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
 }
 
 func (d deck) hasStraight() handResult {
