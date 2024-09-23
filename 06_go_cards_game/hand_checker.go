@@ -63,6 +63,7 @@ func (d deck) evaluateHand() handResult {
 	}
 
 	if twoPair := d.hasTwoPair(); twoPair.combinationId == TwoPairId {
+		twoPair.playerHand.addHighCards(d, twoPair.combinationValues)
 		return twoPair
 	}
 
@@ -110,7 +111,7 @@ func (d deck) hasFour() handResult {
 		}
 	}
 
-	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
+	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
 // Checks for a full house card combination.
@@ -163,7 +164,7 @@ func (d deck) hasFlush() handResult {
 		}
 	}
 
-	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
+	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
 func (d deck) hasStraight() handResult {
@@ -195,12 +196,36 @@ func (d deck) hasThree() handResult {
 		}
 	}
 
-	return handResult{combinationId: NotMatchId, playerHand: d[:5], combinationValues: []string{}}
+	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
+// Checks for 2x two of a kind card combination.
 func (d deck) hasTwoPair() handResult {
-	hr := handResult{combinationId: TwoPairId, playerHand: d[:5]}
-	return hr
+	// check the 7 cards for a two of a kind
+	firstPair := d.hasPair()
+
+	if firstPair.combinationId != SinglePairId {
+		return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
+	}
+
+	// remove two of a kind cards from deck
+	deckWithoutFirstPair := d.removeFromDeck(firstPair.combinationValues)
+
+	// check remaining 5 cards for a two of a kind
+	secondPair := deckWithoutFirstPair.hasPair()
+
+	if secondPair.combinationId != SinglePairId {
+		return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
+	}
+
+	twoPairsDeck := slices.Concat(firstPair.playerHand, secondPair.playerHand)
+	valuesToAvoid := slices.Concat(firstPair.combinationValues, secondPair.combinationValues)
+
+	return handResult{
+		combinationId:     TwoPairId,
+		playerHand:        twoPairsDeck,
+		combinationValues: valuesToAvoid,
+	}
 }
 
 // Checks for a single pair card combination.
