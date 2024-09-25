@@ -76,14 +76,47 @@ func (d deck) evaluateHand() handResult {
 	return handResult{combinationId: HighCardId, playerHand: d[:5]}
 }
 
+// Checks for a royal flush card combination.
 func (d deck) hasRoyalFlush() handResult {
-	hr := handResult{combinationId: RoyalFlushId, playerHand: d[:5]}
-	return hr
+	suitGroups := map[string]deck{}
+	for _, c := range d {
+		suitGroups[c.suit] = append(suitGroups[c.suit], c)
+	}
+
+	for _, suitHand := range suitGroups {
+		if len(suitHand) >= 5 {
+			straightResult := suitHand.hasStraight()
+
+			if straightResult.combinationId == RoyalFlushId && straightResult.playerHand[0].value == "A" {
+				straightResult.combinationId = RoyalFlushId
+
+				return straightResult
+			}
+		}
+	}
+	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
+// Checks for a straight flush card combination.
 func (d deck) hasStraightFlush() handResult {
-	hr := handResult{combinationId: StraightFlushId, playerHand: d[:5]}
-	return hr
+	suitGroups := map[string]deck{}
+	for _, c := range d {
+		suitGroups[c.suit] = append(suitGroups[c.suit], c)
+	}
+
+	for _, suitHand := range suitGroups {
+		if len(suitHand) >= 5 {
+			straightResult := suitHand.hasStraight()
+
+			if straightResult.combinationId == StraightId {
+				straightResult.combinationId = StraightFlushId
+
+				return straightResult
+			}
+		}
+	}
+
+	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
 // Checks for a four of a kind card combination.
