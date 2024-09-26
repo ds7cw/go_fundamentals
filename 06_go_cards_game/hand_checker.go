@@ -78,16 +78,18 @@ func (d deck) evaluateHand() handResult {
 
 // Checks for a royal flush card combination.
 func (d deck) hasRoyalFlush() handResult {
+	// Group cards by suit
 	suitGroups := map[string]deck{}
 	for _, c := range d {
 		suitGroups[c.suit] = append(suitGroups[c.suit], c)
 	}
 
+	// Check each suit group for royal flush
 	for _, suitHand := range suitGroups {
 		if len(suitHand) >= 5 {
 			straightResult := suitHand.hasStraight()
 
-			if straightResult.combinationId == RoyalFlushId && straightResult.playerHand[0].value == "A" {
+			if straightResult.combinationId == StraightId && straightResult.playerHand[0].value == "A" {
 				straightResult.combinationId = RoyalFlushId
 
 				return straightResult
@@ -99,11 +101,13 @@ func (d deck) hasRoyalFlush() handResult {
 
 // Checks for a straight flush card combination.
 func (d deck) hasStraightFlush() handResult {
+	// Group cards by suit
 	suitGroups := map[string]deck{}
 	for _, c := range d {
 		suitGroups[c.suit] = append(suitGroups[c.suit], c)
 	}
 
+	// Check each suit group for straight flush
 	for _, suitHand := range suitGroups {
 		if len(suitHand) >= 5 {
 			straightResult := suitHand.hasStraight()
@@ -201,8 +205,43 @@ func (d deck) hasFlush() handResult {
 }
 
 func (d deck) hasStraight() handResult {
-	hr := handResult{combinationId: StraightId, playerHand: d[:5]}
-	return hr
+	// User a map to filter out duplicate values
+	cardSet := map[int]card{}
+	for _, c := range d {
+		cardSet[c.rank] = c
+	}
+
+	// Create a deck of cards with unique values
+	uniqueRanks := make(deck, 0, len(cardSet))
+	for rank := range cardSet {
+		uniqueRanks = append(uniqueRanks, cardSet[rank])
+	}
+
+	// Sort the cards in descending order
+	uniqueRanks.sortDeck()
+
+	// Check for a sequence of 5 consecutive ranks
+	for i := 0; i <= len(uniqueRanks)-5; i++ {
+		if uniqueRanks[i].rank-uniqueRanks[i+4].rank == 4 {
+			return handResult{
+				combinationId:     StraightId,
+				playerHand:        uniqueRanks[i : i+5],
+				combinationValues: []string{},
+			}
+		}
+	}
+
+	// Check for a low straight: A 2 3 4 5
+	lowStraightResult := lookForLowStraight(cardSet)
+	if len(lowStraightResult) == 5 {
+		return handResult{
+			combinationId:     StraightId,
+			playerHand:        lowStraightResult,
+			combinationValues: []string{},
+		}
+	}
+
+	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
 // Checks for a three of a kind card combination.
@@ -319,4 +358,28 @@ func (d deck) removeFromDeck(valuesToRemove []string) deck {
 	}
 
 	return subDeck
+}
+
+// Checks whether a str:card map contains a given str key.
+func contains(cardSet map[int]card, rank int) bool {
+	_, exists := cardSet[rank]
+	return exists
+}
+
+// Returns an Ace-low straight (A, 2, 3, 4, 5) if those cards are present.
+// Otherwise the function returns an empty deck.
+func lookForLowStraight(cardSet map[int]card) deck {
+	if contains(cardSet, 14) && contains(cardSet, 5) &&
+		contains(cardSet, 4) && contains(cardSet, 3) &&
+		contains(cardSet, 2) {
+		return deck{
+			cardSet[14],
+			cardSet[2],
+			cardSet[3],
+			cardSet[4],
+			cardSet[5],
+		}
+	}
+
+	return deck{}
 }
