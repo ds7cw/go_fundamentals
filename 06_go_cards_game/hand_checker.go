@@ -30,12 +30,9 @@ func (d deck) evaluateHand() handResult {
 	d.sortDeck()
 	fmt.Println("Sorted D:", d)
 
-	if rFlush := d.hasRoyalFlush(); rFlush.combinationId == RoyalFlushId {
+	if rFlush := d.hasStraightFlush(); rFlush.combinationId == RoyalFlushId ||
+		rFlush.combinationId == StraightFlushId {
 		return rFlush
-	}
-
-	if sFlush := d.hasStraightFlush(); sFlush.combinationId == StraightFlushId {
-		return sFlush
 	}
 
 	if four := d.hasFour(); four.combinationId == FourKindId {
@@ -77,29 +74,6 @@ func (d deck) evaluateHand() handResult {
 }
 
 // Checks for a royal flush card combination.
-func (d deck) hasRoyalFlush() handResult {
-	// Group cards by suit
-	suitGroups := map[string]deck{}
-	for _, c := range d {
-		suitGroups[c.suit] = append(suitGroups[c.suit], c)
-	}
-
-	// Check each suit group for royal flush
-	for _, suitHand := range suitGroups {
-		if len(suitHand) >= 5 {
-			straightResult := suitHand.hasStraight()
-
-			if straightResult.combinationId == StraightId && straightResult.playerHand[0].value == "A" {
-				straightResult.combinationId = RoyalFlushId
-
-				return straightResult
-			}
-		}
-	}
-	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
-}
-
-// Checks for a straight flush card combination.
 func (d deck) hasStraightFlush() handResult {
 	// Group cards by suit
 	suitGroups := map[string]deck{}
@@ -107,19 +81,24 @@ func (d deck) hasStraightFlush() handResult {
 		suitGroups[c.suit] = append(suitGroups[c.suit], c)
 	}
 
-	// Check each suit group for straight flush
+	// Check each suit group for royal flush or straight flush
 	for _, suitHand := range suitGroups {
 		if len(suitHand) >= 5 {
 			straightResult := suitHand.hasStraight()
 
-			if straightResult.combinationId == StraightId {
+			// Royal flush if the lowest card is 10
+			if straightResult.combinationId == StraightId && straightResult.playerHand[4].rank == 10 {
+				straightResult.combinationId = RoyalFlushId
+
+				return straightResult
+			} else if straightResult.combinationId == StraightId {
+				// Straigth flush if the 5 cards form a straight but no 10 as the lowest card
 				straightResult.combinationId = StraightFlushId
 
 				return straightResult
 			}
 		}
 	}
-
 	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
