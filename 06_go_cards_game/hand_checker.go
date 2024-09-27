@@ -302,10 +302,6 @@ func (d deck) hasPair() handResult {
 	return handResult{combinationId: NotMatchId, playerHand: deck{}, combinationValues: []string{}}
 }
 
-func (d deck) getHighCard() card {
-	return d[0]
-}
-
 func (fiveDeck *deck) addHighCards(sevenDeck deck, valsToAvoid []string) {
 	for i := 0; len(*fiveDeck) < 5; i++ {
 		// slices.Contains() method introduced in go 1.21
