@@ -109,37 +109,6 @@ func (d deck) shuffle() {
 	}
 }
 
-func getPlayerCount() int {
-	return rand.Intn(7) + 2
-}
-
-func createPlayers(n int) map[string]deck {
-	playerMap := map[string]deck{}
-
-	for i := 1; i <= n; i++ {
-		currentPlayer := "Player" + strconv.Itoa(i)
-		playerMap[currentPlayer] = deck{}
-	}
-
-	return playerMap
-}
-
-func dealToPlayers(m map[string]deck, d deck) (map[string]deck, deck) {
-	for key := range m {
-		m[key], d = deal(d, 2)
-	}
-
-	return m, d
-}
-
-func printPlayersHands(m map[string]deck) {
-	for key, val := range m {
-		fmt.Println(
-			key, "|", val[0].value, "of", val[0].suit,
-			"|", val[1].value, "of", val[1].suit)
-	}
-}
-
 func dealFlop(d deck) (deck, deck) {
 	burn, lessBurn := deal(d, 1)
 	flop, remaining := deal(lessBurn, 3)
