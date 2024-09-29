@@ -13,10 +13,10 @@ func main() {
 	playersCount := getPlayerCount()
 	fmt.Println("\nPlayers Count:", playersCount)
 
-	playersMap := createPlayers(playersCount)
+	playersSlice := createPlayers(playersCount)
 
-	playersMap, cards = dealToPlayers(playersMap, cards)
-	printPlayersHands(playersMap)
+	playersSlice, cards = dealToPlayers(playersSlice, cards)
+	printPlayersHands(playersSlice)
 
 	flop, cards := dealFlop(cards)
 	turn, cards := dealTurn(cards)
@@ -26,26 +26,24 @@ func main() {
 	fmt.Println("\nCommunity Cards:\n", communityCards)
 	fmt.Println("\nRemaining Cards in Deck:", len(cards))
 
-	fmt.Println("Evaluate hand:", communityCards.evaluateHand())
-
-	pairTesting()
-}
-
-// temporary function to test functionality
-func pairTesting() {
-	p1 := deck{
-		card{suit: "Diamonds", value: "2", rank: 2},
-		card{suit: "Spades", value: "6", rank: 6},
-		card{suit: "Spades", value: "Ace", rank: 13},
-		card{suit: "Hearts", value: "9", rank: 9},
-		card{suit: "Diamonds", value: "7", rank: 7},
-		card{suit: "Diamonds", value: "5", rank: 5},
-		card{suit: "Clubs", value: "2", rank: 2},
+	// Evaluate all players' hands
+	for i, pc := range playersSlice {
+		currentPlayerCards := slices.Concat(communityCards, pc.startingHand)
+		playersSlice[i].handData = currentPlayerCards.evaluateHand()
+		fmt.Println("Player", playersSlice[i].playerId,
+			"ComboID:", playersSlice[i].handData.combinationId,
+			"Hand:", playersSlice[i].handData.playerHand)
 	}
-	p1.sortDeck()
-	fmt.Println(p1)
-	p1Result := p1.hasPair()
-	fmt.Println(p1Result)
-	// expected:
-	// {2 [{Clubs 2 2} {Diamonds 2 2} {Spades Ace 13} {Hearts 9 9} {Diamonds 7 7}]}
+
+	// Determine winners
+	winningPlayersIdx := determineWinner(playersSlice)
+	// Print winning hand(s)
+	for _, n := range winningPlayersIdx {
+		cpd := playersSlice[n]
+		fmt.Println(
+			"Winner:", cpd.playerId,
+			"ComboID:", cpd.handData.combinationId,
+			"Cards:", cpd.handData.playerHand,
+		)
+	}
 }

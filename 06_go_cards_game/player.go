@@ -56,3 +56,46 @@ func printPlayersHands(s []playerData) {
 			p.startingHand[1].suit)
 	}
 }
+
+// Compares the cards of p1 and p2.
+// Returns the pidx of the winner, or -1 in the event of a draw.
+func compareHands(s []playerData, p1idx int, p2idx int) int {
+	hr1, hr2 := s[p1idx].handData, s[p2idx].handData
+
+	if hr1.combinationId > hr2.combinationId {
+		return p1idx
+	} else if hr1.combinationId < hr2.combinationId {
+		return p2idx
+	} else {
+		for i := 0; i < 5; i++ {
+			p1Card, p2Card := hr1.playerHand[i], hr2.playerHand[i]
+			if p1Card.rank > p2Card.rank {
+				return p1idx
+			} else if p1Card.rank < p2Card.rank {
+				return p2idx
+			}
+		}
+	}
+	return -1
+}
+
+// Returns a slice of indices associated with the best hand(s).
+func determineWinner(s []playerData) []int {
+	winners := []int{}
+	highestScore := 0
+
+	for i, pd := range s {
+		if pd.handData.combinationId > highestScore {
+			winners = []int{i}
+			highestScore = pd.handData.combinationId
+		} else if pd.handData.combinationId == highestScore {
+			winningIdx := compareHands(s, i, i-1)
+			if winningIdx < 0 {
+				winners = append(winners, i)
+			} else if winningIdx == i {
+				winners = []int{i}
+			}
+		}
+	}
+	return winners
+}
