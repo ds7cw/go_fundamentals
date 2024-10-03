@@ -89,7 +89,7 @@ func determineWinner(s []playerData) []int {
 			winners = []int{i}
 			highestScore = pd.handData.combinationId
 		} else if pd.handData.combinationId == highestScore {
-			winningIdx := compareHands(s, i, i-1)
+			winningIdx := compareHands(s, i, winners[0])
 			if winningIdx < 0 {
 				winners = append(winners, i)
 			} else if winningIdx == i {
