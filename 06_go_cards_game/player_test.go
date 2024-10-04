@@ -95,7 +95,7 @@ func TestPrintPlayersHands(t *testing.T) {
 	want := "Player: 1 | Jack of Diamonds | Jack of Hearts\n"
 
 	if got != want {
-		t.Errorf("PrintHelloWorld() = %q; want %q", got, want)
+		t.Errorf("PrintPlayersHands() = %q; want %q", got, want)
 	}
 }
 
