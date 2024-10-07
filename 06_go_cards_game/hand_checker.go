@@ -272,6 +272,12 @@ func (d deck) hasTwoPair() handResult {
 	twoPairsDeck := slices.Concat(firstPair.playerHand, secondPair.playerHand)
 	valuesToAvoid := slices.Concat(firstPair.combinationValues, secondPair.combinationValues)
 
+	if secondPair.playerHand[0].rank > firstPair.playerHand[0].rank {
+		twoPairsDeck[0], twoPairsDeck[2] = twoPairsDeck[2], twoPairsDeck[0]
+		twoPairsDeck[1], twoPairsDeck[3] = twoPairsDeck[3], twoPairsDeck[1]
+		valuesToAvoid[0], valuesToAvoid[1] = valuesToAvoid[1], valuesToAvoid[0]
+	}
+
 	return handResult{
 		combinationId:     TwoPairId,
 		playerHand:        twoPairsDeck,
