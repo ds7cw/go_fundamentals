@@ -59,6 +59,67 @@ func TestHasPair(t *testing.T) {
 	}
 }
 
+func TestHasTwoPair(t *testing.T) {
+	d := deck{
+		card{SuitClubs, "3", 3},
+		card{SuitDiamonds, "Jack", 11},
+		card{SuitClubs, "10", 10},
+		card{SuitHearts, "6", 6},
+		card{SuitDiamonds, "King", 13},
+		card{SuitSpades, "3", 3},
+		card{SuitHearts, "10", 10},
+	}
+
+	res := d.hasTwoPair()
+	exp := handResult{
+		combinationId: TwoPairId,
+		playerHand: deck{
+			card{SuitClubs, "10", 10},
+			card{SuitHearts, "10", 10},
+			card{SuitClubs, "3", 3},
+			card{SuitSpades, "3", 3},
+		},
+		combinationValues: []string{"10", "3"},
+	}
+
+	if res.combinationId != exp.combinationId {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp.combinationId, res.combinationId)
+	}
+
+	for i := 0; i < 4; i++ {
+		if res.playerHand[i] != exp.playerHand[i] {
+			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
+				i, exp.playerHand[i].value, exp.playerHand[i].suit,
+				res.playerHand[i].value, res.playerHand[i].suit)
+		}
+	}
+
+	if exp.combinationValues[0] != res.combinationValues[0] ||
+		exp.combinationValues[1] != res.combinationValues[1] {
+		t.Errorf("Expected combinationValues %q, got %q",
+			exp.combinationValues, res.combinationValues)
+	}
+
+	d[2] = card{SuitHearts, "7", 7}
+	res2 := d.hasTwoPair()
+	exp2 := NotMatchId
+
+	if res2.combinationId != exp2 {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp2, res2.combinationId)
+	}
+
+	d[0] = card{SuitHearts, "4", 4}
+	res3 := d.hasTwoPair()
+	exp3 := NotMatchId
+
+	if res3.combinationId != exp3 {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp3, res3.combinationId)
+	}
+}
+
 func TestHasThree(t *testing.T) {
 	d := deck{
 		card{SuitClubs, "3", 3},
