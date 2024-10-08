@@ -180,6 +180,100 @@ func TestHasThree(t *testing.T) {
 	}
 }
 
+func TestHasStraight(t *testing.T) {
+	d := deck{
+		card{SuitClubs, "3", 3},
+		card{SuitDiamonds, "Jack", 11},
+		card{SuitClubs, "10", 10},
+		card{SuitHearts, "6", 6},
+		card{SuitDiamonds, "4", 4},
+		card{SuitSpades, "5", 5},
+		card{SuitHearts, "7", 7},
+	}
+
+	res := d.hasStraight()
+	exp := handResult{
+		combinationId: StraightId,
+		playerHand: deck{
+			card{SuitHearts, "7", 7},
+			card{SuitHearts, "6", 6},
+			card{SuitSpades, "5", 5},
+			card{SuitDiamonds, "4", 4},
+			card{SuitClubs, "3", 3},
+		},
+		combinationValues: []string{},
+	}
+
+	if res.combinationId != exp.combinationId {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp.combinationId, res.combinationId)
+	}
+
+	for i := 0; i < 4; i++ {
+		if res.playerHand[i] != exp.playerHand[i] {
+			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
+				i, exp.playerHand[i].value, exp.playerHand[i].suit,
+				res.playerHand[i].value, res.playerHand[i].suit)
+		}
+	}
+
+	if len(res.combinationValues) != len(exp.combinationValues) {
+		t.Errorf("Expected combinationValues length %d, got %d",
+			len(exp.combinationValues), len(res.combinationValues))
+	}
+
+	d[0] = card{SuitSpades, "Ace", 14}
+	res2 := d.hasStraight()
+	exp2 := NotMatchId
+
+	if res2.combinationId != exp2 {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp.combinationId, res.combinationId)
+	}
+
+	// Low straight A 2 3 4 5
+	d = deck{
+		card{SuitDiamonds, "10", 10},
+		card{SuitHearts, "5", 5},
+		card{SuitDiamonds, "Ace", 14},
+		card{SuitClubs, "4", 4},
+		card{SuitSpades, "Queen", 12},
+		card{SuitHearts, "2", 2},
+		card{SuitClubs, "3", 3},
+	}
+
+	res3 := d.hasStraight()
+	exp3 := handResult{
+		combinationId: StraightId,
+		playerHand: deck{
+			card{SuitDiamonds, "Ace", 14},
+			card{SuitHearts, "2", 2},
+			card{SuitClubs, "3", 3},
+			card{SuitClubs, "4", 4},
+			card{SuitHearts, "5", 5},
+		},
+		combinationValues: []string{},
+	}
+
+	if res.combinationId != exp3.combinationId {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp3.combinationId, res3.combinationId)
+	}
+
+	for i := 0; i < 4; i++ {
+		if res3.playerHand[i] != exp3.playerHand[i] {
+			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
+				i, exp3.playerHand[i].value, exp3.playerHand[i].suit,
+				res3.playerHand[i].value, res3.playerHand[i].suit)
+		}
+	}
+
+	if len(res3.combinationValues) != len(exp3.combinationValues) {
+		t.Errorf("Expected combinationValues length %d, got %d",
+			len(exp3.combinationValues), len(res3.combinationValues))
+	}
+}
+
 func TestHasFour(t *testing.T) {
 	d := deck{
 		card{SuitClubs, "3", 3},
