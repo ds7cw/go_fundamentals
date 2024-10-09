@@ -168,6 +168,7 @@ func (d deck) hasFlush() handResult {
 			if len(cardCounter[c.suit]) == 5 {
 				// 5 cards of the same suit found
 				bestHand := addCombinationCards(d, cardCounter[c.suit])
+				bestHand.sortDeck()
 
 				return handResult{
 					combinationId:     FlushId,
