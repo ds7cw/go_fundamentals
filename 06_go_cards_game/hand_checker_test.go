@@ -246,11 +246,11 @@ func TestHasStraight(t *testing.T) {
 	exp3 := handResult{
 		combinationId: StraightId,
 		playerHand: deck{
-			card{SuitDiamonds, "Ace", 14},
-			card{SuitHearts, "2", 2},
-			card{SuitClubs, "3", 3},
-			card{SuitClubs, "4", 4},
 			card{SuitHearts, "5", 5},
+			card{SuitClubs, "4", 4},
+			card{SuitClubs, "3", 3},
+			card{SuitHearts, "2", 2},
+			card{SuitDiamonds, "Ace", 14},
 		},
 		combinationValues: []string{},
 	}
@@ -445,5 +445,91 @@ func TestHasFour(t *testing.T) {
 	if res2.combinationId != exp2 {
 		t.Errorf("Expected combinationId %d, got %d",
 			exp2, res2.combinationId)
+	}
+}
+
+func TestHasStraightFlush(t *testing.T) {
+	// Royal Flush
+	d := deck{
+		card{SuitSpades, "Ace", 14},
+		card{SuitSpades, "King", 13},
+		card{SuitSpades, "Jack", 11},
+		card{SuitSpades, "10", 10},
+		card{SuitSpades, "Queen", 12},
+		card{SuitSpades, "9", 9},
+		card{SuitSpades, "2", 2},
+	}
+
+	res := d.hasStraightFlush()
+	exp := handResult{
+		combinationId: RoyalFlushId,
+		playerHand: deck{
+			card{SuitSpades, "Ace", 14},
+			card{SuitSpades, "King", 13},
+			card{SuitSpades, "Queen", 12},
+			card{SuitSpades, "Jack", 11},
+			card{SuitSpades, "10", 10},
+		},
+		combinationValues: []string{},
+	}
+
+	if res.combinationId != exp.combinationId {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp.combinationId, res.combinationId)
+	}
+
+	for i := 0; i < 4; i++ {
+		if res.playerHand[i] != exp.playerHand[i] {
+			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
+				i, exp.playerHand[i].value, exp.playerHand[i].suit,
+				res.playerHand[i].value, res.playerHand[i].suit)
+		}
+	}
+
+	if len(res.combinationValues) != len(exp.combinationValues) {
+		t.Errorf("Expected combinationValues length %d, got %d",
+			len(exp.combinationValues), len(res.combinationValues))
+	}
+
+	// King-high Straight Flush
+	d[0] = card{SuitSpades, "4", 4}
+	res2 := d.hasStraightFlush()
+	exp2 := handResult{
+		combinationId: StraightFlushId,
+		playerHand: deck{
+			card{SuitSpades, "King", 13},
+			card{SuitSpades, "Queen", 12},
+			card{SuitSpades, "Jack", 11},
+			card{SuitSpades, "10", 10},
+			card{SuitSpades, "9", 9},
+		},
+		combinationValues: []string{},
+	}
+
+	if res2.combinationId != exp2.combinationId {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp2.combinationId, res2.combinationId)
+	}
+
+	for i := 0; i < 4; i++ {
+		if res2.playerHand[i] != exp2.playerHand[i] {
+			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
+				i, exp2.playerHand[i].value, exp2.playerHand[i].suit,
+				res2.playerHand[i].value, res2.playerHand[i].suit)
+		}
+	}
+
+	if len(res2.combinationValues) != len(exp2.combinationValues) {
+		t.Errorf("Expected combinationValues length %d, got %d",
+			len(exp2.combinationValues), len(res2.combinationValues))
+	}
+
+	d[3].suit, d[4].suit = SuitHearts, SuitDiamonds
+	res3 := d.hasStraightFlush()
+	exp3 := NotMatchId
+
+	if res3.combinationId != exp3 {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp3, res3.combinationId)
 	}
 }
