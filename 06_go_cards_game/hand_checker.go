@@ -355,11 +355,11 @@ func lookForLowStraight(cardSet map[int]card) deck {
 		contains(cardSet, 4) && contains(cardSet, 3) &&
 		contains(cardSet, 2) {
 		return deck{
-			cardSet[14],
-			cardSet[2],
-			cardSet[3],
-			cardSet[4],
 			cardSet[5],
+			cardSet[4],
+			cardSet[3],
+			cardSet[2],
+			cardSet[14],
 		}
 	}
 
