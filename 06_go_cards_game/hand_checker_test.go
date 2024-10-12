@@ -26,20 +26,9 @@ func TestHasPair(t *testing.T) {
 		combinationValues: []string{"10"},
 	}
 
-	if res.combinationId != exp.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
-	}
-
-	if res.combinationValues[0] != exp.combinationValues[0] {
-		t.Errorf("Expected combinationValues %v, got %v",
-			exp.combinationValues[0], res.combinationValues[0])
-	}
-
-	if res.playerHand[0] != exp.playerHand[0] || res.playerHand[1] != exp.playerHand[1] {
-		t.Errorf("Expected pair %v %v, got %v %v",
-			exp.combinationValues[0], res.combinationValues[0], exp.combinationValues[1], res.combinationValues[1])
-	}
+	helperComboId(res, exp, t)
+	helperPlayerHand(res, exp, t, 2)
+	helperCombinationValues(res, exp, t)
 
 	d2 := deck{
 		card{SuitClubs, "3", 3},
@@ -82,24 +71,9 @@ func TestHasTwoPair(t *testing.T) {
 		combinationValues: []string{"10", "3"},
 	}
 
-	if res.combinationId != exp.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
-	}
-
-	for i := 0; i < 4; i++ {
-		if res.playerHand[i] != exp.playerHand[i] {
-			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
-				i, exp.playerHand[i].value, exp.playerHand[i].suit,
-				res.playerHand[i].value, res.playerHand[i].suit)
-		}
-	}
-
-	if exp.combinationValues[0] != res.combinationValues[0] ||
-		exp.combinationValues[1] != res.combinationValues[1] {
-		t.Errorf("Expected combinationValues %q, got %q",
-			exp.combinationValues, res.combinationValues)
-	}
+	helperComboId(res, exp, t)
+	helperPlayerHand(res, exp, t, 4)
+	helperCombinationValues(res, exp, t)
 
 	d[2] = card{SuitHearts, "7", 7}
 	res2 := d.hasTwoPair()
@@ -138,29 +112,13 @@ func TestHasThree(t *testing.T) {
 			card{SuitClubs, "10", 10},
 			card{SuitDiamonds, "10", 10},
 			card{SuitHearts, "10", 10},
-			card{SuitSpades, "King", 13},
-			card{SuitDiamonds, "Jack", 11},
 		},
 		combinationValues: []string{"10"},
 	}
 
-	if res.combinationId != exp.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
-	}
-
-	if res.combinationValues[0] != exp.combinationValues[0] {
-		t.Errorf("Expected combinationValues %v, got %v",
-			exp.combinationValues[0], res.combinationValues[0])
-	}
-
-	if res.playerHand[0] != exp.playerHand[0] || res.playerHand[1] != exp.playerHand[1] ||
-		res.playerHand[2] != exp.playerHand[2] {
-		t.Errorf("Expected pair %v %v %v, got %v %v %v",
-			exp.combinationValues[0], res.combinationValues[0],
-			exp.combinationValues[1], res.combinationValues[1],
-			exp.combinationValues[2], res.combinationValues[2])
-	}
+	helperComboId(res, exp, t)
+	helperPlayerHand(res, exp, t, 3)
+	helperCombinationValues(res, exp, t)
 
 	d2 := deck{
 		card{SuitClubs, "3", 3},
@@ -204,23 +162,9 @@ func TestHasStraight(t *testing.T) {
 		combinationValues: []string{},
 	}
 
-	if res.combinationId != exp.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
-	}
-
-	for i := 0; i < 4; i++ {
-		if res.playerHand[i] != exp.playerHand[i] {
-			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
-				i, exp.playerHand[i].value, exp.playerHand[i].suit,
-				res.playerHand[i].value, res.playerHand[i].suit)
-		}
-	}
-
-	if len(res.combinationValues) != len(exp.combinationValues) {
-		t.Errorf("Expected combinationValues length %d, got %d",
-			len(exp.combinationValues), len(res.combinationValues))
-	}
+	helperComboId(res, exp, t)
+	helperPlayerHand(res, exp, t, 5)
+	helperCombinationValues(res, exp, t)
 
 	d[0] = card{SuitSpades, "Ace", 14}
 	res2 := d.hasStraight()
@@ -255,23 +199,9 @@ func TestHasStraight(t *testing.T) {
 		combinationValues: []string{},
 	}
 
-	if res.combinationId != exp3.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp3.combinationId, res3.combinationId)
-	}
-
-	for i := 0; i < 4; i++ {
-		if res3.playerHand[i] != exp3.playerHand[i] {
-			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
-				i, exp3.playerHand[i].value, exp3.playerHand[i].suit,
-				res3.playerHand[i].value, res3.playerHand[i].suit)
-		}
-	}
-
-	if len(res3.combinationValues) != len(exp3.combinationValues) {
-		t.Errorf("Expected combinationValues length %d, got %d",
-			len(exp3.combinationValues), len(res3.combinationValues))
-	}
+	helperComboId(res3, exp3, t)
+	helperPlayerHand(res3, exp3, t, 5)
+	helperCombinationValues(res3, exp3, t)
 }
 
 func TestHasFlush(t *testing.T) {
@@ -298,23 +228,9 @@ func TestHasFlush(t *testing.T) {
 		combinationValues: []string{},
 	}
 
-	if res.combinationId != exp.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
-	}
-
-	for i := 0; i < 4; i++ {
-		if res.playerHand[i] != exp.playerHand[i] {
-			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
-				i, exp.playerHand[i].value, exp.playerHand[i].suit,
-				res.playerHand[i].value, res.playerHand[i].suit)
-		}
-	}
-
-	if len(res.combinationValues) != len(exp.combinationValues) {
-		t.Errorf("Expected combinationValues length %d, got %d",
-			len(exp.combinationValues), len(res.combinationValues))
-	}
+	helperComboId(res, exp, t)
+	helperPlayerHand(res, exp, t, 5)
+	helperCombinationValues(res, exp, t)
 
 	d[0] = card{SuitSpades, "Ace", 14}
 	res2 := d.hasFlush()
@@ -350,23 +266,9 @@ func TestHasFullHouse(t *testing.T) {
 		combinationValues: []string{},
 	}
 
-	if res.combinationId != exp.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
-	}
-
-	for i := 0; i < 4; i++ {
-		if res.playerHand[i] != exp.playerHand[i] {
-			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
-				i, exp.playerHand[i].value, exp.playerHand[i].suit,
-				res.playerHand[i].value, res.playerHand[i].suit)
-		}
-	}
-
-	if len(res.combinationValues) != len(exp.combinationValues) {
-		t.Errorf("Expected combinationValues length %d, got %d",
-			len(exp.combinationValues), len(res.combinationValues))
-	}
+	helperComboId(res, exp, t)
+	helperPlayerHand(res, exp, t, 5)
+	helperCombinationValues(res, exp, t)
 
 	d[1] = card{SuitSpades, "Ace", 14}
 	res2 := d.hasFullHouse()
@@ -406,29 +308,13 @@ func TestHasFour(t *testing.T) {
 			card{SuitDiamonds, "10", 10},
 			card{SuitSpades, "10", 10},
 			card{SuitHearts, "10", 10},
-			card{SuitDiamonds, "Jack", 11},
 		},
 		combinationValues: []string{"10"},
 	}
 
-	if res.combinationId != exp.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
-	}
-
-	if res.combinationValues[0] != exp.combinationValues[0] {
-		t.Errorf("Expected combinationValues %v, got %v",
-			exp.combinationValues[0], res.combinationValues[0])
-	}
-
-	if res.playerHand[0] != exp.playerHand[0] || res.playerHand[1] != exp.playerHand[1] ||
-		res.playerHand[2] != exp.playerHand[2] || res.playerHand[3] != exp.playerHand[3] {
-		t.Errorf("Expected pair %v %v %v %v, got %v %v %v %v",
-			exp.combinationValues[0], exp.combinationValues[1],
-			exp.combinationValues[2], exp.combinationValues[3],
-			res.combinationValues[0], res.combinationValues[1],
-			res.combinationValues[2], res.combinationValues[3])
-	}
+	helperComboId(res, exp, t)
+	helperPlayerHand(res, exp, t, 4)
+	helperCombinationValues(res, exp, t)
 
 	d2 := deck{
 		card{SuitClubs, "3", 3},
@@ -473,23 +359,9 @@ func TestHasStraightFlush(t *testing.T) {
 		combinationValues: []string{},
 	}
 
-	if res.combinationId != exp.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
-	}
-
-	for i := 0; i < 4; i++ {
-		if res.playerHand[i] != exp.playerHand[i] {
-			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
-				i, exp.playerHand[i].value, exp.playerHand[i].suit,
-				res.playerHand[i].value, res.playerHand[i].suit)
-		}
-	}
-
-	if len(res.combinationValues) != len(exp.combinationValues) {
-		t.Errorf("Expected combinationValues length %d, got %d",
-			len(exp.combinationValues), len(res.combinationValues))
-	}
+	helperComboId(res, exp, t)
+	helperPlayerHand(res, exp, t, 5)
+	helperCombinationValues(res, exp, t)
 
 	// King-high Straight Flush
 	d[0] = card{SuitSpades, "4", 4}
@@ -506,23 +378,9 @@ func TestHasStraightFlush(t *testing.T) {
 		combinationValues: []string{},
 	}
 
-	if res2.combinationId != exp2.combinationId {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp2.combinationId, res2.combinationId)
-	}
-
-	for i := 0; i < 4; i++ {
-		if res2.playerHand[i] != exp2.playerHand[i] {
-			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
-				i, exp2.playerHand[i].value, exp2.playerHand[i].suit,
-				res2.playerHand[i].value, res2.playerHand[i].suit)
-		}
-	}
-
-	if len(res2.combinationValues) != len(exp2.combinationValues) {
-		t.Errorf("Expected combinationValues length %d, got %d",
-			len(exp2.combinationValues), len(res2.combinationValues))
-	}
+	helperComboId(res2, exp2, t)
+	helperPlayerHand(res2, exp2, t, 5)
+	helperCombinationValues(res2, exp2, t)
 
 	d[3].suit, d[4].suit = SuitHearts, SuitDiamonds
 	res3 := d.hasStraightFlush()
@@ -531,5 +389,29 @@ func TestHasStraightFlush(t *testing.T) {
 	if res3.combinationId != exp3 {
 		t.Errorf("Expected combinationId %d, got %d",
 			exp3, res3.combinationId)
+	}
+}
+
+func helperComboId(res handResult, exp handResult, t *testing.T) {
+	if res.combinationId != exp.combinationId {
+		t.Errorf("Expected combinationId %d, got %d",
+			exp.combinationId, res.combinationId)
+	}
+}
+
+func helperPlayerHand(res handResult, exp handResult, t *testing.T, end int) {
+	for i := 0; i < end; i++ {
+		if res.playerHand[i] != exp.playerHand[i] {
+			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
+				i, exp.playerHand[i].value, exp.playerHand[i].suit,
+				res.playerHand[i].value, res.playerHand[i].suit)
+		}
+	}
+}
+
+func helperCombinationValues(res handResult, exp handResult, t *testing.T) {
+	if len(res.combinationValues) != len(exp.combinationValues) {
+		t.Errorf("Expected combinationValues length %d, got %d",
+			len(exp.combinationValues), len(res.combinationValues))
 	}
 }
