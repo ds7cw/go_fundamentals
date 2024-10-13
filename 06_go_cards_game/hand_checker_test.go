@@ -46,6 +46,11 @@ func TestHasPair(t *testing.T) {
 		t.Errorf("Expected combinationId %d, got %d",
 			exp2, res2.combinationId)
 	}
+
+	res3 := d.evaluateHand()
+	helperComboId(res3, exp, t)
+	helperPlayerHand(res3, exp, t, 5)
+	helperCombinationValues(res3, exp, t)
 }
 
 func TestHasTwoPair(t *testing.T) {
@@ -92,6 +97,16 @@ func TestHasTwoPair(t *testing.T) {
 		t.Errorf("Expected combinationId %d, got %d",
 			exp3, res3.combinationId)
 	}
+
+	d[0] = card{SuitClubs, "3", 3}
+	d[2] = card{SuitClubs, "10", 10}
+
+	res4 := d.evaluateHand()
+	exp.playerHand = append(exp.playerHand,
+		card{SuitDiamonds, "King", 13})
+	helperComboId(res4, exp, t)
+	helperPlayerHand(res4, exp, t, 5)
+	helperCombinationValues(res4, exp, t)
 }
 
 func TestHasThree(t *testing.T) {
@@ -136,6 +151,14 @@ func TestHasThree(t *testing.T) {
 		t.Errorf("Expected combinationId %d, got %d",
 			exp2, res2.combinationId)
 	}
+
+	res3 := d.evaluateHand()
+	exp.playerHand = append(exp.playerHand,
+		card{SuitSpades, "King", 13},
+		card{SuitDiamonds, "Jack", 11})
+	helperComboId(res3, exp, t)
+	helperPlayerHand(res3, exp, t, 5)
+	helperCombinationValues(res3, exp, t)
 }
 
 func TestHasStraight(t *testing.T) {
@@ -332,6 +355,13 @@ func TestHasFour(t *testing.T) {
 		t.Errorf("Expected combinationId %d, got %d",
 			exp2, res2.combinationId)
 	}
+
+	res4 := d.evaluateHand()
+	exp.playerHand = append(exp.playerHand,
+		card{SuitDiamonds, "Jack", 11})
+	helperComboId(res4, exp, t)
+	helperPlayerHand(res4, exp, t, 5)
+	helperCombinationValues(res4, exp, t)
 }
 
 func TestHasStraightFlush(t *testing.T) {
