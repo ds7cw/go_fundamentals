@@ -26,50 +26,50 @@ func TestCreatePlayers(t *testing.T) {
 			len(resultSlice), count)
 	}
 
-	if p3Id := resultSlice[2].playerId; p3Id != count {
+	if p3Id := resultSlice[2].PlayerId; p3Id != count {
 		t.Errorf("Player 3 ID = %d, expected %d",
-			resultSlice[2].playerId, count)
+			resultSlice[2].PlayerId, count)
 	}
 }
 
 // Tests dealToPlayers func. Each player must receive 2 cards.
-// All remaining cards must be dealt to the deck parameter.
+// All remaining cards must be dealt to the Deck parameter.
 func TestDealToPlayers(t *testing.T) {
 	playerSlice := createPlayers(2)
-	testDeck := deck{
-		card{suit: SuitSpades, value: "10", rank: 10},
-		card{suit: SuitSpades, value: "Jack", rank: 10},
-		card{suit: SuitHearts, value: "Queen", rank: 12},
-		card{suit: SuitHearts, value: "King", rank: 13},
-		card{suit: SuitDiamonds, value: "Ace", rank: 14},
+	testDeck := Deck{
+		Card{Suit: SuitSpades, Value: "10", Rank: 10},
+		Card{Suit: SuitSpades, Value: "Jack", Rank: 10},
+		Card{Suit: SuitHearts, Value: "Queen", Rank: 12},
+		Card{Suit: SuitHearts, Value: "King", Rank: 13},
+		Card{Suit: SuitDiamonds, Value: "Ace", Rank: 14},
 	}
 	playerSlice, remaining := dealToPlayers(playerSlice, testDeck)
 	expected := []string{"Ace", "Diamonds"}
-	if remaining[0].value != expected[0] || remaining[0].suit != expected[1] {
+	if remaining[0].Value != expected[0] || remaining[0].Suit != expected[1] {
 		t.Errorf("Expected remaining card to be %v of %v, got %v of %v instead",
-			expected[0], expected[1], remaining[0].value, remaining[0].suit)
+			expected[0], expected[1], remaining[0].Value, remaining[0].Suit)
 	}
 
-	p1Cards := playerSlice[0].startingHand
+	p1Cards := playerSlice[0].StartingHand
 	expected = []string{"10", "Spades"}
-	if p1Cards[0].value != expected[0] || p1Cards[0].suit != expected[1] {
+	if p1Cards[0].Value != expected[0] || p1Cards[0].Suit != expected[1] {
 		t.Errorf("Expected P1 1st Card to be %v of %v, got %v of %v instead",
-			expected[0], expected[1], p1Cards[0].value, p1Cards[0].suit)
+			expected[0], expected[1], p1Cards[0].Value, p1Cards[0].Suit)
 	}
 
 	expected = []string{"Queen", "Hearts"}
-	if p1Cards[1].value != expected[0] || p1Cards[1].suit != expected[1] {
+	if p1Cards[1].Value != expected[0] || p1Cards[1].Suit != expected[1] {
 		t.Errorf("Expected P1 2nd Card to be %v of %v, got %v of %v instead",
-			expected[0], expected[1], p1Cards[1].value, p1Cards[1].suit)
+			expected[0], expected[1], p1Cards[1].Value, p1Cards[1].Suit)
 	}
 }
 
 // Tests printPlayersHands. Must correctly print the player ID & starting hand.
 func TestPrintPlayersHands(t *testing.T) {
 	playerSlice := createPlayers(1)
-	playerSlice[0].startingHand = deck{
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitHearts, "Jack", 11},
+	playerSlice[0].StartingHand = Deck{
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitHearts, "Jack", 11},
 	}
 
 	// Save the original stdout
@@ -103,47 +103,47 @@ func TestPrintPlayersHands(t *testing.T) {
 // Must return the idx of the winnin player, if there is one, -1 otherwise.
 func TestCompareHands(t *testing.T) {
 	playerSlice := createPlayers(4)
-	playerSlice[0].handData = handResult{
-		combinationId: FullHouseId,
-		playerHand: deck{
-			card{SuitClubs, "Ace", 14},
-			card{SuitSpades, "Ace", 14},
-			card{SuitClubs, "King", 13},
-			card{SuitSpades, "King", 13},
-			card{SuitHearts, "King", 13},
+	playerSlice[0].HandData = HandResult{
+		CombinationId: FullHouseId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "Ace", 14},
+			Card{SuitSpades, "Ace", 14},
+			Card{SuitClubs, "King", 13},
+			Card{SuitSpades, "King", 13},
+			Card{SuitHearts, "King", 13},
 		},
 	}
 
-	playerSlice[1].handData = handResult{
-		combinationId: FlushId,
-		playerHand: deck{
-			card{SuitClubs, "Ace", 14},
-			card{SuitClubs, "King", 13},
-			card{SuitClubs, "Jack", 11},
-			card{SuitClubs, "10", 10},
-			card{SuitClubs, "9", 9},
+	playerSlice[1].HandData = HandResult{
+		CombinationId: FlushId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "Ace", 14},
+			Card{SuitClubs, "King", 13},
+			Card{SuitClubs, "Jack", 11},
+			Card{SuitClubs, "10", 10},
+			Card{SuitClubs, "9", 9},
 		},
 	}
 
-	playerSlice[2].handData = handResult{
-		combinationId: FullHouseId,
-		playerHand: deck{
-			card{SuitClubs, "Ace", 14},
-			card{SuitSpades, "Ace", 14},
-			card{SuitClubs, "King", 13},
-			card{SuitSpades, "King", 13},
-			card{SuitHearts, "King", 13},
+	playerSlice[2].HandData = HandResult{
+		CombinationId: FullHouseId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "Ace", 14},
+			Card{SuitSpades, "Ace", 14},
+			Card{SuitClubs, "King", 13},
+			Card{SuitSpades, "King", 13},
+			Card{SuitHearts, "King", 13},
 		},
 	}
 
-	playerSlice[3].handData = handResult{
-		combinationId: FlushId,
-		playerHand: deck{
-			card{SuitClubs, "Ace", 14},
-			card{SuitClubs, "King", 13},
-			card{SuitClubs, "Queen", 12},
-			card{SuitClubs, "10", 10},
-			card{SuitClubs, "9", 9},
+	playerSlice[3].HandData = HandResult{
+		CombinationId: FlushId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "Ace", 14},
+			Card{SuitClubs, "King", 13},
+			Card{SuitClubs, "Queen", 12},
+			Card{SuitClubs, "10", 10},
+			Card{SuitClubs, "9", 9},
 		},
 	}
 
@@ -178,36 +178,36 @@ func TestCompareHands(t *testing.T) {
 
 func TestDetermineWinner(t *testing.T) {
 	playerSlice := createPlayers(3)
-	playerSlice[0].handData = handResult{
-		combinationId: FullHouseId,
-		playerHand: deck{
-			card{SuitClubs, "King", 13},
-			card{SuitSpades, "King", 13},
-			card{SuitHearts, "King", 13},
-			card{SuitSpades, "Ace", 14},
-			card{SuitHearts, "Ace", 14},
+	playerSlice[0].HandData = HandResult{
+		CombinationId: FullHouseId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "King", 13},
+			Card{SuitSpades, "King", 13},
+			Card{SuitHearts, "King", 13},
+			Card{SuitSpades, "Ace", 14},
+			Card{SuitHearts, "Ace", 14},
 		},
 	}
 
-	playerSlice[1].handData = handResult{
-		combinationId: FullHouseId,
-		playerHand: deck{
-			card{SuitClubs, "Ace", 14},
-			card{SuitSpades, "Ace", 14},
-			card{SuitDiamonds, "Ace", 14},
-			card{SuitSpades, "King", 13},
-			card{SuitHearts, "King", 13},
+	playerSlice[1].HandData = HandResult{
+		CombinationId: FullHouseId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "Ace", 14},
+			Card{SuitSpades, "Ace", 14},
+			Card{SuitDiamonds, "Ace", 14},
+			Card{SuitSpades, "King", 13},
+			Card{SuitHearts, "King", 13},
 		},
 	}
 
-	playerSlice[2].handData = handResult{
-		combinationId: FullHouseId,
-		playerHand: deck{
-			card{SuitClubs, "Ace", 14},
-			card{SuitSpades, "Ace", 14},
-			card{SuitDiamonds, "Ace", 14},
-			card{SuitSpades, "King", 13},
-			card{SuitHearts, "King", 13},
+	playerSlice[2].HandData = HandResult{
+		CombinationId: FullHouseId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "Ace", 14},
+			Card{SuitSpades, "Ace", 14},
+			Card{SuitDiamonds, "Ace", 14},
+			Card{SuitSpades, "King", 13},
+			Card{SuitHearts, "King", 13},
 		},
 	}
 

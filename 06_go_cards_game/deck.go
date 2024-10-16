@@ -15,18 +15,18 @@ const SuitDiamonds string = "Diamonds"
 const SuitHearts string = "Hearts"
 const SuitClubs string = "Clubs"
 
-type card struct {
-	suit  string
-	value string
-	rank  int
+type Card struct {
+	Suit  string
+	Value string
+	Rank  int
 }
 
 // Create a new type of 'deck'
 // which is a slice of card structs
-type deck []card
+type Deck []Card
 
-func newDeck() deck {
-	cards := deck{}
+func newDeck() Deck {
+	cards := Deck{}
 	cardSuits := []string{SuitClubs, SuitDiamonds, SuitHearts, SuitSpades}
 	cardValues := []string{
 		"2", "3", "4", "5",
@@ -36,9 +36,9 @@ func newDeck() deck {
 
 	i := 2
 
-	for _, value := range cardValues {
-		for _, suit := range cardSuits {
-			crd := card{suit: suit, value: value, rank: i}
+	for _, Value := range cardValues {
+		for _, Suit := range cardSuits {
+			crd := Card{Suit: Suit, Value: Value, Rank: i}
 			cards = append(cards, crd)
 		}
 		i += 1
@@ -48,30 +48,30 @@ func newDeck() deck {
 
 }
 
-func (d deck) print() {
+func (d Deck) print() {
 	for i, card := range d {
 		fmt.Println(i, card)
 	}
 }
 
-func deal(d deck, handSize int) (deck, deck) {
+func deal(d Deck, handSize int) (Deck, Deck) {
 	return d[:handSize], d[handSize:]
 }
 
-func (d deck) toString() string {
+func (d Deck) toString() string {
 	var string_deck []string
 
 	for _, el := range d {
-		string_deck = append(string_deck, el.value+" of "+el.suit+" "+strconv.Itoa(el.rank))
+		string_deck = append(string_deck, el.Value+" of "+el.Suit+" "+strconv.Itoa(el.Rank))
 	}
 	return strings.Join([]string(string_deck), ",")
 }
 
-func (d deck) saveToFile(filename string) error {
+func (d Deck) saveToFile(filename string) error {
 	return os.WriteFile(filename, []byte(d.toString()), 0666)
 }
 
-func newDeckFromFile(filename string) deck {
+func newDeckFromFile(filename string) Deck {
 	bs, err := os.ReadFile(filename)
 	if err != nil {
 		// Option 1: Log the error and return a call to newDeck()
@@ -81,25 +81,25 @@ func newDeckFromFile(filename string) deck {
 	}
 
 	s := strings.Split(string(bs), ",")
-	d := deck{}
+	d := Deck{}
 
 	for _, el := range s {
 		sub_el := strings.Split(el, " ")
 		card_val := sub_el[0]
-		card_suit := sub_el[2]
-		card_rank, err := strconv.Atoi(sub_el[3])
+		card_Suit := sub_el[2]
+		card_Rank, err := strconv.Atoi(sub_el[3])
 		if err != nil {
 			fmt.Println("Error:", err)
 			os.Exit(1)
 		}
 
-		crd := card{suit: card_suit, value: card_val, rank: card_rank}
+		crd := Card{Suit: card_Suit, Value: card_val, Rank: card_Rank}
 		d = append(d, crd)
 	}
 	return d
 }
 
-func (d deck) shuffle() {
+func (d Deck) shuffle() {
 	source := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(source)
 
@@ -109,7 +109,7 @@ func (d deck) shuffle() {
 	}
 }
 
-func dealFlop(d deck) (deck, deck) {
+func dealFlop(d Deck) (Deck, Deck) {
 	burn, lessBurn := deal(d, 1)
 	flop, remaining := deal(lessBurn, 3)
 
@@ -119,7 +119,7 @@ func dealFlop(d deck) (deck, deck) {
 	return flop, remaining
 }
 
-func dealTurn(d deck) (deck, deck) {
+func dealTurn(d Deck) (Deck, Deck) {
 	burn, lessBurn := deal(d, 1)
 	turn, remaining := deal(lessBurn, 1)
 
@@ -129,7 +129,7 @@ func dealTurn(d deck) (deck, deck) {
 	return turn, remaining
 }
 
-func dealRiver(d deck) (deck, deck) {
+func dealRiver(d Deck) (Deck, Deck) {
 	burn, lessBurn := deal(d, 1)
 	river, remaining := deal(lessBurn, 1)
 
@@ -139,12 +139,12 @@ func dealRiver(d deck) (deck, deck) {
 	return river, remaining
 }
 
-func compareCardRank(d deck) func(i, j int) bool {
+func compareCardRank(d Deck) func(i, j int) bool {
 	return func(i, j int) bool {
-		return d[i].rank > d[j].rank
+		return d[i].Rank > d[j].Rank
 	}
 }
 
-func (d deck) sortDeck() {
+func (d Deck) sortDeck() {
 	sort.Slice(d, compareCardRank(d))
 }

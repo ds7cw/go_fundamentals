@@ -3,48 +3,48 @@ package main
 import "testing"
 
 func TestHasPair(t *testing.T) {
-	d := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "10", 10},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "10", 10},
-		card{SuitSpades, "King", 13},
-		card{SuitSpades, "8", 8},
+	d := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "10", 10},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "10", 10},
+		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "8", 8},
 	}
 
 	res := d.hasPair()
-	exp := handResult{
-		combinationId: SinglePairId,
-		playerHand: deck{
-			card{SuitClubs, "10", 10},
-			card{SuitDiamonds, "10", 10},
-			card{SuitSpades, "King", 13},
-			card{SuitDiamonds, "Jack", 11},
-			card{SuitSpades, "8", 8},
+	exp := HandResult{
+		CombinationId: SinglePairId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "10", 10},
+			Card{SuitDiamonds, "10", 10},
+			Card{SuitSpades, "King", 13},
+			Card{SuitDiamonds, "Jack", 11},
+			Card{SuitSpades, "8", 8},
 		},
-		combinationValues: []string{"10"},
+		CombinationValues: []string{"10"},
 	}
 
 	helperComboId(res, exp, t)
 	helperPlayerHand(res, exp, t, 2)
 	helperCombinationValues(res, exp, t)
 
-	d2 := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "5", 5},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "10", 10},
-		card{SuitSpades, "King", 13},
-		card{SuitSpades, "8", 8},
+	d2 := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "5", 5},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "10", 10},
+		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "8", 8},
 	}
 	res2 := d2.hasPair()
 	exp2 := NotMatchId
 
-	if res2.combinationId != exp2 {
+	if res2.CombinationId != exp2 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp2, res2.combinationId)
+			exp2, res2.CombinationId)
 	}
 
 	res3 := d.evaluateHand()
@@ -54,172 +54,172 @@ func TestHasPair(t *testing.T) {
 }
 
 func TestHasTwoPair(t *testing.T) {
-	d := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "10", 10},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "King", 13},
-		card{SuitSpades, "3", 3},
-		card{SuitHearts, "10", 10},
+	d := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "10", 10},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "King", 13},
+		Card{SuitSpades, "3", 3},
+		Card{SuitHearts, "10", 10},
 	}
 
 	res := d.hasTwoPair()
-	exp := handResult{
-		combinationId: TwoPairId,
-		playerHand: deck{
-			card{SuitClubs, "10", 10},
-			card{SuitHearts, "10", 10},
-			card{SuitClubs, "3", 3},
-			card{SuitSpades, "3", 3},
+	exp := HandResult{
+		CombinationId: TwoPairId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "10", 10},
+			Card{SuitHearts, "10", 10},
+			Card{SuitClubs, "3", 3},
+			Card{SuitSpades, "3", 3},
 		},
-		combinationValues: []string{"10", "3"},
+		CombinationValues: []string{"10", "3"},
 	}
 
 	helperComboId(res, exp, t)
 	helperPlayerHand(res, exp, t, 4)
 	helperCombinationValues(res, exp, t)
 
-	d[2] = card{SuitHearts, "7", 7}
+	d[2] = Card{SuitHearts, "7", 7}
 	res2 := d.hasTwoPair()
 	exp2 := NotMatchId
 
-	if res2.combinationId != exp2 {
+	if res2.CombinationId != exp2 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp2, res2.combinationId)
+			exp2, res2.CombinationId)
 	}
 
-	d[0] = card{SuitHearts, "4", 4}
+	d[0] = Card{SuitHearts, "4", 4}
 	res3 := d.hasTwoPair()
 	exp3 := NotMatchId
 
-	if res3.combinationId != exp3 {
+	if res3.CombinationId != exp3 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp3, res3.combinationId)
+			exp3, res3.CombinationId)
 	}
 
-	d[0] = card{SuitClubs, "3", 3}
-	d[2] = card{SuitClubs, "10", 10}
+	d[0] = Card{SuitClubs, "3", 3}
+	d[2] = Card{SuitClubs, "10", 10}
 
 	res4 := d.evaluateHand()
-	exp.playerHand = append(exp.playerHand,
-		card{SuitDiamonds, "King", 13})
+	exp.PlayerHand = append(exp.PlayerHand,
+		Card{SuitDiamonds, "King", 13})
 	helperComboId(res4, exp, t)
 	helperPlayerHand(res4, exp, t, 5)
 	helperCombinationValues(res4, exp, t)
 }
 
 func TestHasThree(t *testing.T) {
-	d := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "10", 10},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "10", 10},
-		card{SuitSpades, "King", 13},
-		card{SuitHearts, "10", 10},
+	d := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "10", 10},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "10", 10},
+		Card{SuitSpades, "King", 13},
+		Card{SuitHearts, "10", 10},
 	}
 
 	res := d.hasThree()
-	exp := handResult{
-		combinationId: ThreeKindId,
-		playerHand: deck{
-			card{SuitClubs, "10", 10},
-			card{SuitDiamonds, "10", 10},
-			card{SuitHearts, "10", 10},
+	exp := HandResult{
+		CombinationId: ThreeKindId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "10", 10},
+			Card{SuitDiamonds, "10", 10},
+			Card{SuitHearts, "10", 10},
 		},
-		combinationValues: []string{"10"},
+		CombinationValues: []string{"10"},
 	}
 
 	helperComboId(res, exp, t)
 	helperPlayerHand(res, exp, t, 3)
 	helperCombinationValues(res, exp, t)
 
-	d2 := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "5", 5},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "10", 10},
-		card{SuitSpades, "King", 13},
-		card{SuitSpades, "8", 8},
+	d2 := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "5", 5},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "10", 10},
+		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "8", 8},
 	}
 	res2 := d2.hasThree()
 	exp2 := NotMatchId
 
-	if res2.combinationId != exp2 {
+	if res2.CombinationId != exp2 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp2, res2.combinationId)
+			exp2, res2.CombinationId)
 	}
 
 	res3 := d.evaluateHand()
-	exp.playerHand = append(exp.playerHand,
-		card{SuitSpades, "King", 13},
-		card{SuitDiamonds, "Jack", 11})
+	exp.PlayerHand = append(exp.PlayerHand,
+		Card{SuitSpades, "King", 13},
+		Card{SuitDiamonds, "Jack", 11})
 	helperComboId(res3, exp, t)
 	helperPlayerHand(res3, exp, t, 5)
 	helperCombinationValues(res3, exp, t)
 }
 
 func TestHasStraight(t *testing.T) {
-	d := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "10", 10},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "4", 4},
-		card{SuitSpades, "5", 5},
-		card{SuitHearts, "7", 7},
+	d := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "10", 10},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "4", 4},
+		Card{SuitSpades, "5", 5},
+		Card{SuitHearts, "7", 7},
 	}
 
 	res := d.hasStraight()
-	exp := handResult{
-		combinationId: StraightId,
-		playerHand: deck{
-			card{SuitHearts, "7", 7},
-			card{SuitHearts, "6", 6},
-			card{SuitSpades, "5", 5},
-			card{SuitDiamonds, "4", 4},
-			card{SuitClubs, "3", 3},
+	exp := HandResult{
+		CombinationId: StraightId,
+		PlayerHand: Deck{
+			Card{SuitHearts, "7", 7},
+			Card{SuitHearts, "6", 6},
+			Card{SuitSpades, "5", 5},
+			Card{SuitDiamonds, "4", 4},
+			Card{SuitClubs, "3", 3},
 		},
-		combinationValues: []string{},
+		CombinationValues: []string{},
 	}
 
 	helperComboId(res, exp, t)
 	helperPlayerHand(res, exp, t, 5)
 	helperCombinationValues(res, exp, t)
 
-	d[0] = card{SuitSpades, "Ace", 14}
+	d[0] = Card{SuitSpades, "Ace", 14}
 	res2 := d.hasStraight()
 	exp2 := NotMatchId
 
-	if res2.combinationId != exp2 {
+	if res2.CombinationId != exp2 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp2, res2.combinationId)
+			exp2, res2.CombinationId)
 	}
 
 	// Low straight A 2 3 4 5
-	d = deck{
-		card{SuitDiamonds, "10", 10},
-		card{SuitHearts, "5", 5},
-		card{SuitDiamonds, "Ace", 14},
-		card{SuitClubs, "4", 4},
-		card{SuitSpades, "Queen", 12},
-		card{SuitHearts, "2", 2},
-		card{SuitClubs, "3", 3},
+	d = Deck{
+		Card{SuitDiamonds, "10", 10},
+		Card{SuitHearts, "5", 5},
+		Card{SuitDiamonds, "Ace", 14},
+		Card{SuitClubs, "4", 4},
+		Card{SuitSpades, "Queen", 12},
+		Card{SuitHearts, "2", 2},
+		Card{SuitClubs, "3", 3},
 	}
 
 	res3 := d.hasStraight()
-	exp3 := handResult{
-		combinationId: StraightId,
-		playerHand: deck{
-			card{SuitHearts, "5", 5},
-			card{SuitClubs, "4", 4},
-			card{SuitClubs, "3", 3},
-			card{SuitHearts, "2", 2},
-			card{SuitDiamonds, "Ace", 14},
+	exp3 := HandResult{
+		CombinationId: StraightId,
+		PlayerHand: Deck{
+			Card{SuitHearts, "5", 5},
+			Card{SuitClubs, "4", 4},
+			Card{SuitClubs, "3", 3},
+			Card{SuitHearts, "2", 2},
+			Card{SuitDiamonds, "Ace", 14},
 		},
-		combinationValues: []string{},
+		CombinationValues: []string{},
 	}
 
 	helperComboId(res3, exp3, t)
@@ -233,27 +233,27 @@ func TestHasStraight(t *testing.T) {
 }
 
 func TestHasFlush(t *testing.T) {
-	d := deck{
-		card{SuitHearts, "3", 3},
-		card{SuitHearts, "Jack", 11},
-		card{SuitHearts, "10", 10},
-		card{SuitDiamonds, "6", 6},
-		card{SuitHearts, "4", 4},
-		card{SuitSpades, "5", 5},
-		card{SuitHearts, "7", 7},
+	d := Deck{
+		Card{SuitHearts, "3", 3},
+		Card{SuitHearts, "Jack", 11},
+		Card{SuitHearts, "10", 10},
+		Card{SuitDiamonds, "6", 6},
+		Card{SuitHearts, "4", 4},
+		Card{SuitSpades, "5", 5},
+		Card{SuitHearts, "7", 7},
 	}
 
 	res := d.hasFlush()
-	exp := handResult{
-		combinationId: FlushId,
-		playerHand: deck{
-			card{SuitHearts, "Jack", 11},
-			card{SuitHearts, "10", 10},
-			card{SuitHearts, "7", 7},
-			card{SuitHearts, "4", 4},
-			card{SuitHearts, "3", 3},
+	exp := HandResult{
+		CombinationId: FlushId,
+		PlayerHand: Deck{
+			Card{SuitHearts, "Jack", 11},
+			Card{SuitHearts, "10", 10},
+			Card{SuitHearts, "7", 7},
+			Card{SuitHearts, "4", 4},
+			Card{SuitHearts, "3", 3},
 		},
-		combinationValues: []string{},
+		CombinationValues: []string{},
 	}
 
 	helperComboId(res, exp, t)
@@ -265,64 +265,64 @@ func TestHasFlush(t *testing.T) {
 	helperPlayerHand(res2, exp, t, 5)
 	helperCombinationValues(res2, exp, t)
 
-	d[0] = card{SuitSpades, "Ace", 14}
+	d[0] = Card{SuitSpades, "Ace", 14}
 	res3 := d.hasFlush()
 	exp3 := NotMatchId
 
-	if res3.combinationId != exp3 {
+	if res3.CombinationId != exp3 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp3, res3.combinationId)
+			exp3, res3.CombinationId)
 	}
 }
 
 func TestHasFullHouse(t *testing.T) {
-	d := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "10", 10},
-		card{SuitClubs, "10", 10},
-		card{SuitHearts, "3", 3},
-		card{SuitDiamonds, "4", 4},
-		card{SuitSpades, "5", 5},
-		card{SuitDiamonds, "3", 3},
+	d := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "10", 10},
+		Card{SuitClubs, "10", 10},
+		Card{SuitHearts, "3", 3},
+		Card{SuitDiamonds, "4", 4},
+		Card{SuitSpades, "5", 5},
+		Card{SuitDiamonds, "3", 3},
 	}
 
 	res := d.hasFullHouse()
-	exp := handResult{
-		combinationId: FullHouseId,
-		playerHand: deck{
-			card{SuitClubs, "3", 3},
-			card{SuitHearts, "3", 3},
-			card{SuitDiamonds, "3", 3},
-			card{SuitDiamonds, "10", 10},
-			card{SuitClubs, "10", 10},
+	exp := HandResult{
+		CombinationId: FullHouseId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "3", 3},
+			Card{SuitHearts, "3", 3},
+			Card{SuitDiamonds, "3", 3},
+			Card{SuitDiamonds, "10", 10},
+			Card{SuitClubs, "10", 10},
 		},
-		combinationValues: []string{},
+		CombinationValues: []string{},
 	}
 
 	helperComboId(res, exp, t)
 	helperPlayerHand(res, exp, t, 5)
 	helperCombinationValues(res, exp, t)
 
-	d[1] = card{SuitSpades, "Ace", 14}
+	d[1] = Card{SuitSpades, "Ace", 14}
 	res2 := d.hasFullHouse()
 	exp2 := NotMatchId
 
-	if res2.combinationId != exp2 {
+	if res2.CombinationId != exp2 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp2, res2.combinationId)
+			exp2, res2.CombinationId)
 	}
 
-	d[0] = card{SuitSpades, "Queen", 12}
+	d[0] = Card{SuitSpades, "Queen", 12}
 	res3 := d.hasFullHouse()
 	exp3 := NotMatchId
 
-	if res3.combinationId != exp3 {
+	if res3.CombinationId != exp3 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp3, res3.combinationId)
+			exp3, res3.CombinationId)
 	}
 
-	d[0] = card{SuitClubs, "3", 3}
-	d[1] = card{SuitDiamonds, "10", 10}
+	d[0] = Card{SuitClubs, "3", 3}
+	d[1] = Card{SuitDiamonds, "10", 10}
 	res4 := d.evaluateHand()
 	helperComboId(res4, exp, t)
 	helperPlayerHand(res4, exp, t, 5)
@@ -330,52 +330,52 @@ func TestHasFullHouse(t *testing.T) {
 }
 
 func TestHasFour(t *testing.T) {
-	d := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "10", 10},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "10", 10},
-		card{SuitSpades, "10", 10},
-		card{SuitHearts, "10", 10},
+	d := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "10", 10},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "10", 10},
+		Card{SuitSpades, "10", 10},
+		Card{SuitHearts, "10", 10},
 	}
 
 	res := d.hasFour()
-	exp := handResult{
-		combinationId: FourKindId,
-		playerHand: deck{
-			card{SuitClubs, "10", 10},
-			card{SuitDiamonds, "10", 10},
-			card{SuitSpades, "10", 10},
-			card{SuitHearts, "10", 10},
+	exp := HandResult{
+		CombinationId: FourKindId,
+		PlayerHand: Deck{
+			Card{SuitClubs, "10", 10},
+			Card{SuitDiamonds, "10", 10},
+			Card{SuitSpades, "10", 10},
+			Card{SuitHearts, "10", 10},
 		},
-		combinationValues: []string{"10"},
+		CombinationValues: []string{"10"},
 	}
 
 	helperComboId(res, exp, t)
 	helperPlayerHand(res, exp, t, 4)
 	helperCombinationValues(res, exp, t)
 
-	d2 := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "5", 5},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "10", 10},
-		card{SuitSpades, "King", 13},
-		card{SuitSpades, "8", 8},
+	d2 := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "5", 5},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "10", 10},
+		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "8", 8},
 	}
 	res2 := d2.hasFour()
 	exp2 := NotMatchId
 
-	if res2.combinationId != exp2 {
+	if res2.CombinationId != exp2 {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp2, res2.combinationId)
+			exp2, res2.CombinationId)
 	}
 
 	res4 := d.evaluateHand()
-	exp.playerHand = append(exp.playerHand,
-		card{SuitDiamonds, "Jack", 11})
+	exp.PlayerHand = append(exp.PlayerHand,
+		Card{SuitDiamonds, "Jack", 11})
 	helperComboId(res4, exp, t)
 	helperPlayerHand(res4, exp, t, 5)
 	helperCombinationValues(res4, exp, t)
@@ -383,27 +383,27 @@ func TestHasFour(t *testing.T) {
 
 func TestHasStraightFlush(t *testing.T) {
 	// Royal Flush
-	d := deck{
-		card{SuitSpades, "Ace", 14},
-		card{SuitSpades, "King", 13},
-		card{SuitSpades, "Jack", 11},
-		card{SuitSpades, "10", 10},
-		card{SuitSpades, "Queen", 12},
-		card{SuitSpades, "9", 9},
-		card{SuitSpades, "2", 2},
+	d := Deck{
+		Card{SuitSpades, "Ace", 14},
+		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "Jack", 11},
+		Card{SuitSpades, "10", 10},
+		Card{SuitSpades, "Queen", 12},
+		Card{SuitSpades, "9", 9},
+		Card{SuitSpades, "2", 2},
 	}
 
 	res := d.hasStraightFlush()
-	exp := handResult{
-		combinationId: RoyalFlushId,
-		playerHand: deck{
-			card{SuitSpades, "Ace", 14},
-			card{SuitSpades, "King", 13},
-			card{SuitSpades, "Queen", 12},
-			card{SuitSpades, "Jack", 11},
-			card{SuitSpades, "10", 10},
+	exp := HandResult{
+		CombinationId: RoyalFlushId,
+		PlayerHand: Deck{
+			Card{SuitSpades, "Ace", 14},
+			Card{SuitSpades, "King", 13},
+			Card{SuitSpades, "Queen", 12},
+			Card{SuitSpades, "Jack", 11},
+			Card{SuitSpades, "10", 10},
 		},
-		combinationValues: []string{},
+		CombinationValues: []string{},
 	}
 
 	helperComboId(res, exp, t)
@@ -411,34 +411,34 @@ func TestHasStraightFlush(t *testing.T) {
 	helperCombinationValues(res, exp, t)
 
 	// King-high Straight Flush
-	d[0] = card{SuitSpades, "4", 4}
+	d[0] = Card{SuitSpades, "4", 4}
 	res2 := d.hasStraightFlush()
-	exp2 := handResult{
-		combinationId: StraightFlushId,
-		playerHand: deck{
-			card{SuitSpades, "King", 13},
-			card{SuitSpades, "Queen", 12},
-			card{SuitSpades, "Jack", 11},
-			card{SuitSpades, "10", 10},
-			card{SuitSpades, "9", 9},
+	exp2 := HandResult{
+		CombinationId: StraightFlushId,
+		PlayerHand: Deck{
+			Card{SuitSpades, "King", 13},
+			Card{SuitSpades, "Queen", 12},
+			Card{SuitSpades, "Jack", 11},
+			Card{SuitSpades, "10", 10},
+			Card{SuitSpades, "9", 9},
 		},
-		combinationValues: []string{},
+		CombinationValues: []string{},
 	}
 
 	helperComboId(res2, exp2, t)
 	helperPlayerHand(res2, exp2, t, 5)
 	helperCombinationValues(res2, exp2, t)
 
-	d[3].suit, d[4].suit = SuitHearts, SuitDiamonds
+	d[3].Suit, d[4].Suit = SuitHearts, SuitDiamonds
 	res3 := d.hasStraightFlush()
 	exp3 := NotMatchId
 
-	if res3.combinationId != exp3 {
-		t.Errorf("Expected combinationId %d, got %d",
-			exp3, res3.combinationId)
+	if res3.CombinationId != exp3 {
+		t.Errorf("Expected CombinationId %d, got %d",
+			exp3, res3.CombinationId)
 	}
 
-	d[3].suit, d[4].suit = SuitSpades, SuitSpades
+	d[3].Suit, d[4].Suit = SuitSpades, SuitSpades
 	res4 := d.evaluateHand()
 	helperComboId(res4, exp2, t)
 	helperPlayerHand(res4, exp2, t, 5)
@@ -446,27 +446,27 @@ func TestHasStraightFlush(t *testing.T) {
 }
 
 func TestHighCard(t *testing.T) {
-	d := deck{
-		card{SuitClubs, "3", 3},
-		card{SuitDiamonds, "Jack", 11},
-		card{SuitClubs, "10", 10},
-		card{SuitHearts, "6", 6},
-		card{SuitDiamonds, "5", 5},
-		card{SuitSpades, "King", 13},
-		card{SuitSpades, "8", 8},
+	d := Deck{
+		Card{SuitClubs, "3", 3},
+		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitClubs, "10", 10},
+		Card{SuitHearts, "6", 6},
+		Card{SuitDiamonds, "5", 5},
+		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "8", 8},
 	}
 
 	res := d.evaluateHand()
-	exp := handResult{
-		combinationId: HighCardId,
-		playerHand: deck{
-			card{SuitSpades, "King", 13},
-			card{SuitDiamonds, "Jack", 11},
-			card{SuitClubs, "10", 10},
-			card{SuitSpades, "8", 8},
-			card{SuitHearts, "6", 6},
+	exp := HandResult{
+		CombinationId: HighCardId,
+		PlayerHand: Deck{
+			Card{SuitSpades, "King", 13},
+			Card{SuitDiamonds, "Jack", 11},
+			Card{SuitClubs, "10", 10},
+			Card{SuitSpades, "8", 8},
+			Card{SuitHearts, "6", 6},
 		},
-		combinationValues: []string{},
+		CombinationValues: []string{},
 	}
 
 	helperComboId(res, exp, t)
@@ -474,26 +474,26 @@ func TestHighCard(t *testing.T) {
 	helperCombinationValues(res, exp, t)
 }
 
-func helperComboId(res handResult, exp handResult, t *testing.T) {
-	if res.combinationId != exp.combinationId {
+func helperComboId(res HandResult, exp HandResult, t *testing.T) {
+	if res.CombinationId != exp.CombinationId {
 		t.Errorf("Expected combinationId %d, got %d",
-			exp.combinationId, res.combinationId)
+			exp.CombinationId, res.CombinationId)
 	}
 }
 
-func helperPlayerHand(res handResult, exp handResult, t *testing.T, end int) {
+func helperPlayerHand(res HandResult, exp HandResult, t *testing.T, end int) {
 	for i := 0; i < end; i++ {
-		if res.playerHand[i] != exp.playerHand[i] {
+		if res.PlayerHand[i] != exp.PlayerHand[i] {
 			t.Errorf("Expected card at idx #%d: %v of %v, got %v %v",
-				i, exp.playerHand[i].value, exp.playerHand[i].suit,
-				res.playerHand[i].value, res.playerHand[i].suit)
+				i, exp.PlayerHand[i].Value, exp.PlayerHand[i].Suit,
+				res.PlayerHand[i].Value, res.PlayerHand[i].Suit)
 		}
 	}
 }
 
-func helperCombinationValues(res handResult, exp handResult, t *testing.T) {
-	if len(res.combinationValues) != len(exp.combinationValues) {
+func helperCombinationValues(res HandResult, exp HandResult, t *testing.T) {
+	if len(res.CombinationValues) != len(exp.CombinationValues) {
 		t.Errorf("Expected combinationValues length %d, got %d",
-			len(exp.combinationValues), len(res.combinationValues))
+			len(exp.CombinationValues), len(res.CombinationValues))
 	}
 }

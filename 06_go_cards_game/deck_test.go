@@ -29,21 +29,21 @@ func TestNewDeck(t *testing.T) {
 		// PASS
 		// ok      cards   0.219s
 	}
-	fc := card{SuitClubs, "2", 2}
-	if d[0].suit != fc.suit || d[0].rank != fc.rank || d[0].value != fc.value {
+	fc := Card{SuitClubs, "2", 2}
+	if d[0].Suit != fc.Suit || d[0].Rank != fc.Rank || d[0].Value != fc.Value {
 		t.Errorf("Expected first %v of %v, but got %v of %v",
-			fc.value, fc.suit, d[0].value, d[0].suit)
+			fc.Value, fc.Suit, d[0].Value, d[0].Suit)
 	}
 
-	lc := card{SuitSpades, "Ace", 14}
-	if d[51].suit != lc.suit || d[51].rank != lc.rank || d[51].value != lc.value {
+	lc := Card{SuitSpades, "Ace", 14}
+	if d[51].Suit != lc.Suit || d[51].Rank != lc.Rank || d[51].Value != lc.Value {
 		t.Errorf("Expected first %v of %v, but got %v of %v",
-			lc.value, lc.suit, d[51].value, d[51].suit)
+			lc.Value, lc.Suit, d[51].Value, d[51].Suit)
 	}
 }
 
 func TestPrintDeck(t *testing.T) {
-	d := deck{card{SuitSpades, "Jack", 11}}
+	d := Deck{Card{SuitSpades, "Jack", 11}}
 
 	// Save the original stdout
 	originalStdout := os.Stdout
@@ -68,7 +68,7 @@ func TestPrintDeck(t *testing.T) {
 	want := "0 {Spades Jack 11}\n"
 
 	if got != want {
-		t.Errorf("deck.print() = %q; want %q", got, want)
+		t.Errorf("Deck.print() = %q; want %q", got, want)
 	}
 }
 
@@ -105,49 +105,49 @@ func TestDeal(t *testing.T) {
 		t.Errorf("Expected 52 cards in remaining deck, got %v", len(remaining))
 	}
 
-	fc := card{SuitClubs, "2", 2}
+	fc := Card{SuitClubs, "2", 2}
 	if hand[0] != fc {
 		t.Errorf("Expected first card %v of %v, but got %v of %v",
-			fc.value, fc.suit, hand[0].value, hand[0].suit)
+			fc.Value, fc.Suit, hand[0].Value, hand[0].Suit)
 	}
 
-	lc := card{SuitSpades, "Ace", 14}
+	lc := Card{SuitSpades, "Ace", 14}
 	if remaining[len(remaining)-1] != lc {
 		t.Errorf("Expected last card %v of %v, but got %v of %v",
-			fc.value, fc.suit, remaining[25].value, remaining[25].suit)
+			fc.Value, fc.Suit, remaining[25].Value, remaining[25].Suit)
 	}
 }
 
 func TestShuffle(t *testing.T) {
-	d := deck{
-		card{SuitSpades, "2", 2},
-		card{SuitSpades, "3", 3},
-		card{SuitSpades, "4", 4},
-		card{SuitSpades, "5", 5},
-		card{SuitSpades, "6", 6},
+	d := Deck{
+		Card{SuitSpades, "2", 2},
+		Card{SuitSpades, "3", 3},
+		Card{SuitSpades, "4", 4},
+		Card{SuitSpades, "5", 5},
+		Card{SuitSpades, "6", 6},
 	}
 
 	d.shuffle()
 
-	if d[0].rank == 2 && d[2].rank == 4 && d[4].rank == 6 {
+	if d[0].Rank == 2 && d[2].Rank == 4 && d[4].Rank == 6 {
 		t.Errorf("Expected elements to be different from '2', '4' & '6', got %q, %q & %q",
-			d[0].rank, d[2].rank, d[4].rank)
+			d[0].Rank, d[2].Rank, d[4].Rank)
 	}
 }
 
 func TestDealFlop(t *testing.T) {
-	d := deck{
-		card{SuitSpades, "2", 2},
-		card{SuitSpades, "3", 3},
-		card{SuitSpades, "4", 4},
-		card{SuitSpades, "5", 5},
-		card{SuitSpades, "6", 6},
+	d := Deck{
+		Card{SuitSpades, "2", 2},
+		Card{SuitSpades, "3", 3},
+		Card{SuitSpades, "4", 4},
+		Card{SuitSpades, "5", 5},
+		Card{SuitSpades, "6", 6},
 	}
 
 	f, r := dealFlop(d)
-	if f[0].rank != 3 || f[1].rank != 4 || f[2].rank != 5 {
+	if f[0].Rank != 3 || f[1].Rank != 4 || f[2].Rank != 5 {
 		t.Errorf("Expected cards '2', '3' and '4', got %q, %q and %q",
-			f[0].rank, f[1].rank, f[2].rank)
+			f[0].Rank, f[1].Rank, f[2].Rank)
 	}
 
 	expLen := 3
@@ -156,25 +156,25 @@ func TestDealFlop(t *testing.T) {
 			expLen, len(f))
 	}
 
-	expCard := card{SuitSpades, "6", 6}
-	if r[0].rank != expCard.rank || r[0].suit != expCard.suit || r[0].value != expCard.value {
+	expCard := Card{SuitSpades, "6", 6}
+	if r[0].Rank != expCard.Rank || r[0].Suit != expCard.Suit || r[0].Value != expCard.Value {
 		t.Errorf("Expected card %d of %v, got %d of %v",
-			expCard.rank, expCard.suit, r[0].rank, r[0].suit)
+			expCard.Rank, expCard.Suit, r[0].Rank, r[0].Suit)
 	}
 }
 
 func TestDealTurn(t *testing.T) {
-	d := deck{
-		card{SuitSpades, "2", 2},
-		card{SuitSpades, "3", 3},
-		card{SuitSpades, "4", 4},
+	d := Deck{
+		Card{SuitSpades, "2", 2},
+		Card{SuitSpades, "3", 3},
+		Card{SuitSpades, "4", 4},
 	}
 
 	turn, r := dealTurn(d)
-	expCard := card{SuitSpades, "3", 3}
-	if turn[0].rank != expCard.rank || turn[0].suit != expCard.suit || turn[0].value != expCard.value {
+	expCard := Card{SuitSpades, "3", 3}
+	if turn[0].Rank != expCard.Rank || turn[0].Suit != expCard.Suit || turn[0].Value != expCard.Value {
 		t.Errorf("Expected card %d of %v, got %d of %v",
-			expCard.rank, expCard.suit, turn[0].rank, turn[0].suit)
+			expCard.Rank, expCard.Suit, turn[0].Rank, turn[0].Suit)
 	}
 
 	expLen := 1
@@ -183,25 +183,25 @@ func TestDealTurn(t *testing.T) {
 			expLen, len(turn))
 	}
 
-	expCard = card{SuitSpades, "4", 4}
-	if r[0].rank != expCard.rank || r[0].suit != expCard.suit || r[0].value != expCard.value {
+	expCard = Card{SuitSpades, "4", 4}
+	if r[0].Rank != expCard.Rank || r[0].Suit != expCard.Suit || r[0].Value != expCard.Value {
 		t.Errorf("Expected card %d of %v, got %d of %v",
-			expCard.rank, expCard.suit, r[0].rank, r[0].suit)
+			expCard.Rank, expCard.Suit, r[0].Rank, r[0].Suit)
 	}
 }
 
 func TestDealRiver(t *testing.T) {
-	d := deck{
-		card{SuitSpades, "8", 8},
-		card{SuitSpades, "9", 9},
-		card{SuitSpades, "10", 10},
+	d := Deck{
+		Card{SuitSpades, "8", 8},
+		Card{SuitSpades, "9", 9},
+		Card{SuitSpades, "10", 10},
 	}
 
 	rvr, rmng := dealRiver(d)
-	expCard := card{SuitSpades, "9", 9}
-	if rvr[0].rank != expCard.rank || rvr[0].suit != expCard.suit || rvr[0].value != expCard.value {
+	expCard := Card{SuitSpades, "9", 9}
+	if rvr[0].Rank != expCard.Rank || rvr[0].Suit != expCard.Suit || rvr[0].Value != expCard.Value {
 		t.Errorf("Expected card %d of %v, got %d of %v",
-			expCard.rank, expCard.suit, rvr[0].rank, rvr[0].suit)
+			expCard.Rank, expCard.Suit, rvr[0].Rank, rvr[0].Suit)
 	}
 
 	expLen := 1
@@ -210,32 +210,32 @@ func TestDealRiver(t *testing.T) {
 			expLen, len(rvr))
 	}
 
-	expCard = card{SuitSpades, "10", 10}
-	if rmng[0].rank != expCard.rank || rmng[0].suit != expCard.suit || rmng[0].value != expCard.value {
+	expCard = Card{SuitSpades, "10", 10}
+	if rmng[0].Rank != expCard.Rank || rmng[0].Suit != expCard.Suit || rmng[0].Value != expCard.Value {
 		t.Errorf("Expected card %d of %v, got %d of %v",
-			expCard.rank, expCard.suit, rmng[0].rank, rmng[0].suit)
+			expCard.Rank, expCard.Suit, rmng[0].Rank, rmng[0].Suit)
 	}
 }
 
 func TestCompareCardRank(t *testing.T) {
-	d := deck{
-		card{SuitSpades, "8", 8},
-		card{SuitSpades, "9", 9},
-		card{SuitSpades, "10", 10},
+	d := Deck{
+		Card{SuitSpades, "8", 8},
+		Card{SuitSpades, "9", 9},
+		Card{SuitSpades, "10", 10},
 	}
 
 	d.sortDeck()
 
-	expected := deck{
-		card{SuitSpades, "10", 10},
-		card{SuitSpades, "9", 9},
-		card{SuitSpades, "8", 8},
+	expected := Deck{
+		Card{SuitSpades, "10", 10},
+		Card{SuitSpades, "9", 9},
+		Card{SuitSpades, "8", 8},
 	}
 
 	for i, card := range d {
-		if card.rank != expected[i].rank {
+		if card.Rank != expected[i].Rank {
 			t.Errorf("Expected rank %d at position %d, but got %d",
-				expected[i].rank, i, card.rank)
+				expected[i].Rank, i, card.Rank)
 		}
 	}
 }
