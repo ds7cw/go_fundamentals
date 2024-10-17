@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"slices"
 )
@@ -29,11 +30,11 @@ func main() {
 
 	// Evaluate all players' hands
 	for i, pc := range playersSlice {
-		currentPlayerCards := slices.Concat(communityCards, pc.startingHand)
-		playersSlice[i].handData = currentPlayerCards.evaluateHand()
-		fmt.Println("Player", playersSlice[i].playerId,
-			"ComboID:", playersSlice[i].handData.combinationId,
-			"Hand:", playersSlice[i].handData.playerHand)
+		currentPlayerCards := slices.Concat(communityCards, pc.StartingHand)
+		playersSlice[i].HandData = currentPlayerCards.evaluateHand()
+		fmt.Println("Player", playersSlice[i].PlayerId,
+			"ComboID:", playersSlice[i].HandData.CombinationId,
+			"Hand:", playersSlice[i].HandData.PlayerHand)
 	}
 
 	// Determine winners
@@ -42,15 +43,21 @@ func main() {
 	for _, n := range winningPlayersIdx {
 		cpd := playersSlice[n]
 		fmt.Println(
-			"Winner:", cpd.playerId,
-			"ComboID:", cpd.handData.combinationId,
-			"Cards:", cpd.handData.playerHand,
+			"Winner:", cpd.PlayerId,
+			"ComboID:", cpd.HandData.CombinationId,
+			"Cards:", cpd.HandData.PlayerHand,
 		)
 	}
 
 	http.HandleFunc("/new-game", gameHandleFunc)
 	http.ListenAndServe(":8080", nil)
 
+}
+
+type TemplateContext struct {
+	Players     []PlayerData
+	FaceUpCards Deck
+	Winners     []int
 }
 
 func gameHandleFunc(w http.ResponseWriter, r *http.Request) {
@@ -68,13 +75,17 @@ func gameHandleFunc(w http.ResponseWriter, r *http.Request) {
 	communityCards := slices.Concat(flop, turn, river)
 
 	for i, pc := range playersSlice {
-		currentPlayerCards := slices.Concat(communityCards, pc.startingHand)
-		playersSlice[i].handData = currentPlayerCards.evaluateHand()
-		fmt.Println("Player", playersSlice[i].playerId,
-			"ComboID:", playersSlice[i].handData.combinationId,
-			"Hand:", playersSlice[i].handData.playerHand)
+		currentPlayerCards := slices.Concat(communityCards, pc.StartingHand)
+		playersSlice[i].HandData = currentPlayerCards.evaluateHand()
+		fmt.Println("Player", playersSlice[i].PlayerId,
+			"ComboID:", playersSlice[i].HandData.CombinationId,
+			"Hand:", playersSlice[i].HandData.PlayerHand)
 	}
 
-	fmt.Fprintf(w, "Community Cardz:\n%q\nPlayers:\n%q",
-		communityCards, playersSlice)
+	ctx := TemplateContext{Players: playersSlice, FaceUpCards: communityCards}
+	tmpl := template.Must(template.ParseFiles("templates/new-game.html"))
+	tmpl.Execute(w, ctx)
+
+	// fmt.Fprintf(w, "Community Cardz:\n%q\nPlayers:\n%q",
+	// 	communityCards, playersSlice)
 }
