@@ -1,0 +1,75 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+ 
+.poker-table {
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle at center, #008000, #004d00);
+    border-radius: 50%;
+    position: relative;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+ 
+.community-cards {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 50px;
+}
+ 
+.card {
+    width: 60px;
+    height: 90px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: 1.5em;
+}
+ 
+.card.Hearts, .card.Diamonds {
+    color: red;
+}
+ 
+.card.Spades, .card.Clubs {
+    color: black;
+}
+ 
+.player {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+}
+ 
+.player1 { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+.player2 { top: 10%; right: 25%; transform: translate(50%, -50%); }
+.player3 { top: 50%; right: 5%; transform: translate(50%, -50%); }
+.player4 { top: 90%; right: 25%; transform: translate(50%, -50%); }
+.player5 { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+.player6 { bottom: 10%; left: 25%; transform: translate(-50%, 50%); }
+.player7 { top: 50%; left: 5%; transform: translate(-50%, -50%); }
+.player8 { top: 10%; left: 25%; transform: translate(-50%, -50%); }
+ 
+.hand {
+    display: flex;
+    gap: 10px;
+}
+ 
+.name {
+    margin-bottom: 5px;
+}
