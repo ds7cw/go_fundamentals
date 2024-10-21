@@ -49,6 +49,7 @@ func main() {
 		)
 	}
 
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/new-game", gameHandleFunc)
 	http.ListenAndServe(":8080", nil)
 
