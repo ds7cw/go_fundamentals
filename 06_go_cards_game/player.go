@@ -48,7 +48,7 @@ func dealToPlayers(s []PlayerData, d Deck) ([]PlayerData, Deck) {
 }
 
 // Prints each player's data from the slice in the following format:
-// Player: 2 | King of Spades | King of Diamonds
+// Player: 2 | K of Spades | K of Diamonds
 func printPlayersHands(s []PlayerData) {
 	for _, p := range s {
 		fmt.Println("Player:", p.PlayerId, "|", p.StartingHand[0].Value,

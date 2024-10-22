@@ -5,11 +5,11 @@ import "testing"
 func TestHasPair(t *testing.T) {
 	d := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "10", 10},
 		Card{SuitHearts, "6", 6},
 		Card{SuitDiamonds, "10", 10},
-		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "K", 13},
 		Card{SuitSpades, "8", 8},
 	}
 
@@ -19,8 +19,8 @@ func TestHasPair(t *testing.T) {
 		PlayerHand: Deck{
 			Card{SuitClubs, "10", 10},
 			Card{SuitDiamonds, "10", 10},
-			Card{SuitSpades, "King", 13},
-			Card{SuitDiamonds, "Jack", 11},
+			Card{SuitSpades, "K", 13},
+			Card{SuitDiamonds, "J", 11},
 			Card{SuitSpades, "8", 8},
 		},
 		CombinationValues: []string{"10"},
@@ -32,11 +32,11 @@ func TestHasPair(t *testing.T) {
 
 	d2 := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "5", 5},
 		Card{SuitHearts, "6", 6},
 		Card{SuitDiamonds, "10", 10},
-		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "K", 13},
 		Card{SuitSpades, "8", 8},
 	}
 	res2 := d2.hasPair()
@@ -56,10 +56,10 @@ func TestHasPair(t *testing.T) {
 func TestHasTwoPair(t *testing.T) {
 	d := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "10", 10},
 		Card{SuitHearts, "6", 6},
-		Card{SuitDiamonds, "King", 13},
+		Card{SuitDiamonds, "K", 13},
 		Card{SuitSpades, "3", 3},
 		Card{SuitHearts, "10", 10},
 	}
@@ -103,7 +103,7 @@ func TestHasTwoPair(t *testing.T) {
 
 	res4 := d.evaluateHand()
 	exp.PlayerHand = append(exp.PlayerHand,
-		Card{SuitDiamonds, "King", 13})
+		Card{SuitDiamonds, "K", 13})
 	helperComboId(res4, exp, t)
 	helperPlayerHand(res4, exp, t, 5)
 	helperCombinationValues(res4, exp, t)
@@ -112,11 +112,11 @@ func TestHasTwoPair(t *testing.T) {
 func TestHasThree(t *testing.T) {
 	d := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "10", 10},
 		Card{SuitHearts, "6", 6},
 		Card{SuitDiamonds, "10", 10},
-		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "K", 13},
 		Card{SuitHearts, "10", 10},
 	}
 
@@ -137,11 +137,11 @@ func TestHasThree(t *testing.T) {
 
 	d2 := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "5", 5},
 		Card{SuitHearts, "6", 6},
 		Card{SuitDiamonds, "10", 10},
-		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "K", 13},
 		Card{SuitSpades, "8", 8},
 	}
 	res2 := d2.hasThree()
@@ -154,8 +154,8 @@ func TestHasThree(t *testing.T) {
 
 	res3 := d.evaluateHand()
 	exp.PlayerHand = append(exp.PlayerHand,
-		Card{SuitSpades, "King", 13},
-		Card{SuitDiamonds, "Jack", 11})
+		Card{SuitSpades, "K", 13},
+		Card{SuitDiamonds, "J", 11})
 	helperComboId(res3, exp, t)
 	helperPlayerHand(res3, exp, t, 5)
 	helperCombinationValues(res3, exp, t)
@@ -164,7 +164,7 @@ func TestHasThree(t *testing.T) {
 func TestHasStraight(t *testing.T) {
 	d := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "10", 10},
 		Card{SuitHearts, "6", 6},
 		Card{SuitDiamonds, "4", 4},
@@ -189,7 +189,7 @@ func TestHasStraight(t *testing.T) {
 	helperPlayerHand(res, exp, t, 5)
 	helperCombinationValues(res, exp, t)
 
-	d[0] = Card{SuitSpades, "Ace", 14}
+	d[0] = Card{SuitSpades, "A", 14}
 	res2 := d.hasStraight()
 	exp2 := NotMatchId
 
@@ -202,9 +202,9 @@ func TestHasStraight(t *testing.T) {
 	d = Deck{
 		Card{SuitDiamonds, "10", 10},
 		Card{SuitHearts, "5", 5},
-		Card{SuitDiamonds, "Ace", 14},
+		Card{SuitDiamonds, "A", 14},
 		Card{SuitClubs, "4", 4},
-		Card{SuitSpades, "Queen", 12},
+		Card{SuitSpades, "Q", 12},
 		Card{SuitHearts, "2", 2},
 		Card{SuitClubs, "3", 3},
 	}
@@ -217,7 +217,7 @@ func TestHasStraight(t *testing.T) {
 			Card{SuitClubs, "4", 4},
 			Card{SuitClubs, "3", 3},
 			Card{SuitHearts, "2", 2},
-			Card{SuitDiamonds, "Ace", 14},
+			Card{SuitDiamonds, "A", 14},
 		},
 		CombinationValues: []string{},
 	}
@@ -235,7 +235,7 @@ func TestHasStraight(t *testing.T) {
 func TestHasFlush(t *testing.T) {
 	d := Deck{
 		Card{SuitHearts, "3", 3},
-		Card{SuitHearts, "Jack", 11},
+		Card{SuitHearts, "J", 11},
 		Card{SuitHearts, "10", 10},
 		Card{SuitDiamonds, "6", 6},
 		Card{SuitHearts, "4", 4},
@@ -247,7 +247,7 @@ func TestHasFlush(t *testing.T) {
 	exp := HandResult{
 		CombinationId: FlushId,
 		PlayerHand: Deck{
-			Card{SuitHearts, "Jack", 11},
+			Card{SuitHearts, "J", 11},
 			Card{SuitHearts, "10", 10},
 			Card{SuitHearts, "7", 7},
 			Card{SuitHearts, "4", 4},
@@ -265,7 +265,7 @@ func TestHasFlush(t *testing.T) {
 	helperPlayerHand(res2, exp, t, 5)
 	helperCombinationValues(res2, exp, t)
 
-	d[0] = Card{SuitSpades, "Ace", 14}
+	d[0] = Card{SuitSpades, "A", 14}
 	res3 := d.hasFlush()
 	exp3 := NotMatchId
 
@@ -303,7 +303,7 @@ func TestHasFullHouse(t *testing.T) {
 	helperPlayerHand(res, exp, t, 5)
 	helperCombinationValues(res, exp, t)
 
-	d[1] = Card{SuitSpades, "Ace", 14}
+	d[1] = Card{SuitSpades, "A", 14}
 	res2 := d.hasFullHouse()
 	exp2 := NotMatchId
 
@@ -312,7 +312,7 @@ func TestHasFullHouse(t *testing.T) {
 			exp2, res2.CombinationId)
 	}
 
-	d[0] = Card{SuitSpades, "Queen", 12}
+	d[0] = Card{SuitSpades, "Q", 12}
 	res3 := d.hasFullHouse()
 	exp3 := NotMatchId
 
@@ -332,7 +332,7 @@ func TestHasFullHouse(t *testing.T) {
 func TestHasFour(t *testing.T) {
 	d := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "10", 10},
 		Card{SuitHearts, "6", 6},
 		Card{SuitDiamonds, "10", 10},
@@ -358,11 +358,11 @@ func TestHasFour(t *testing.T) {
 
 	d2 := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "5", 5},
 		Card{SuitHearts, "6", 6},
 		Card{SuitDiamonds, "10", 10},
-		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "K", 13},
 		Card{SuitSpades, "8", 8},
 	}
 	res2 := d2.hasFour()
@@ -375,7 +375,7 @@ func TestHasFour(t *testing.T) {
 
 	res4 := d.evaluateHand()
 	exp.PlayerHand = append(exp.PlayerHand,
-		Card{SuitDiamonds, "Jack", 11})
+		Card{SuitDiamonds, "J", 11})
 	helperComboId(res4, exp, t)
 	helperPlayerHand(res4, exp, t, 5)
 	helperCombinationValues(res4, exp, t)
@@ -384,11 +384,11 @@ func TestHasFour(t *testing.T) {
 func TestHasStraightFlush(t *testing.T) {
 	// Royal Flush
 	d := Deck{
-		Card{SuitSpades, "Ace", 14},
-		Card{SuitSpades, "King", 13},
-		Card{SuitSpades, "Jack", 11},
+		Card{SuitSpades, "A", 14},
+		Card{SuitSpades, "K", 13},
+		Card{SuitSpades, "J", 11},
 		Card{SuitSpades, "10", 10},
-		Card{SuitSpades, "Queen", 12},
+		Card{SuitSpades, "Q", 12},
 		Card{SuitSpades, "9", 9},
 		Card{SuitSpades, "2", 2},
 	}
@@ -397,10 +397,10 @@ func TestHasStraightFlush(t *testing.T) {
 	exp := HandResult{
 		CombinationId: RoyalFlushId,
 		PlayerHand: Deck{
-			Card{SuitSpades, "Ace", 14},
-			Card{SuitSpades, "King", 13},
-			Card{SuitSpades, "Queen", 12},
-			Card{SuitSpades, "Jack", 11},
+			Card{SuitSpades, "A", 14},
+			Card{SuitSpades, "K", 13},
+			Card{SuitSpades, "Q", 12},
+			Card{SuitSpades, "J", 11},
 			Card{SuitSpades, "10", 10},
 		},
 		CombinationValues: []string{},
@@ -416,9 +416,9 @@ func TestHasStraightFlush(t *testing.T) {
 	exp2 := HandResult{
 		CombinationId: StraightFlushId,
 		PlayerHand: Deck{
-			Card{SuitSpades, "King", 13},
-			Card{SuitSpades, "Queen", 12},
-			Card{SuitSpades, "Jack", 11},
+			Card{SuitSpades, "K", 13},
+			Card{SuitSpades, "Q", 12},
+			Card{SuitSpades, "J", 11},
 			Card{SuitSpades, "10", 10},
 			Card{SuitSpades, "9", 9},
 		},
@@ -448,11 +448,11 @@ func TestHasStraightFlush(t *testing.T) {
 func TestHighCard(t *testing.T) {
 	d := Deck{
 		Card{SuitClubs, "3", 3},
-		Card{SuitDiamonds, "Jack", 11},
+		Card{SuitDiamonds, "J", 11},
 		Card{SuitClubs, "10", 10},
 		Card{SuitHearts, "6", 6},
 		Card{SuitDiamonds, "5", 5},
-		Card{SuitSpades, "King", 13},
+		Card{SuitSpades, "K", 13},
 		Card{SuitSpades, "8", 8},
 	}
 
@@ -460,8 +460,8 @@ func TestHighCard(t *testing.T) {
 	exp := HandResult{
 		CombinationId: HighCardId,
 		PlayerHand: Deck{
-			Card{SuitSpades, "King", 13},
-			Card{SuitDiamonds, "Jack", 11},
+			Card{SuitSpades, "K", 13},
+			Card{SuitDiamonds, "J", 11},
 			Card{SuitClubs, "10", 10},
 			Card{SuitSpades, "8", 8},
 			Card{SuitHearts, "6", 6},

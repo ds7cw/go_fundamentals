@@ -35,7 +35,7 @@ func TestNewDeck(t *testing.T) {
 			fc.Value, fc.Suit, d[0].Value, d[0].Suit)
 	}
 
-	lc := Card{SuitSpades, "Ace", 14}
+	lc := Card{SuitSpades, "A", 14}
 	if d[51].Suit != lc.Suit || d[51].Rank != lc.Rank || d[51].Value != lc.Value {
 		t.Errorf("Expected first %v of %v, but got %v of %v",
 			lc.Value, lc.Suit, d[51].Value, d[51].Suit)
@@ -43,7 +43,7 @@ func TestNewDeck(t *testing.T) {
 }
 
 func TestPrintDeck(t *testing.T) {
-	d := Deck{Card{SuitSpades, "Jack", 11}}
+	d := Deck{Card{SuitSpades, "J", 11}}
 
 	// Save the original stdout
 	originalStdout := os.Stdout
@@ -65,7 +65,7 @@ func TestPrintDeck(t *testing.T) {
 
 	// Check the output
 	got := buf.String()
-	want := "0 {Spades Jack 11}\n"
+	want := "0 {Spades J 11}\n"
 
 	if got != want {
 		t.Errorf("Deck.print() = %q; want %q", got, want)
@@ -111,7 +111,7 @@ func TestDeal(t *testing.T) {
 			fc.Value, fc.Suit, hand[0].Value, hand[0].Suit)
 	}
 
-	lc := Card{SuitSpades, "Ace", 14}
+	lc := Card{SuitSpades, "A", 14}
 	if remaining[len(remaining)-1] != lc {
 		t.Errorf("Expected last card %v of %v, but got %v of %v",
 			fc.Value, fc.Suit, remaining[25].Value, remaining[25].Suit)

@@ -31,7 +31,7 @@ func newDeck() Deck {
 	cardValues := []string{
 		"2", "3", "4", "5",
 		"6", "7", "8", "9", "10",
-		"Jack", "Queen", "King", "Ace",
+		"J", "Q", "K", "A",
 	}
 
 	i := 2
