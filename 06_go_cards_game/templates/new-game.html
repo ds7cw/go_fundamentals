@@ -3,19 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Game</title>
+    <title>Poker Table</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    <h1>Community Cards</h1>
-    <div>{{ .FaceUpCards }}</div>
-
-    <h1>Players List</h1>
-    {{range .Players}}
-        <div>
-            <h2>PlayerID: {{.PlayerId}}</h2>
-            <p>CombinationID: {{.HandData.CombinationId}}</p>
-            <p>Player Hand: {{.HandData.PlayerHand}}</p>
+    <div class="poker-table">
+        <div class="community-cards">
+            {{range .FaceUpCards}}
+                <div class="card {{.Suit}}">{{.Value}}{{if eq .Suit "Spades"}}♠️{{else if eq .Suit "Diamonds"}}♦️{{else if eq .Suit "Clubs"}}♣️{{else if eq .Suit "Hearts"}}♥️{{end}}</div>
+            {{end}}
         </div>
-    {{end}}
+        {{range .Players}}
+        <div class="player player{{.PlayerId}}">
+            <div class="name">Player {{.PlayerId}}</div>
+            <div class="hand">
+                {{range .StartingHand}}
+                <div class="card {{.Suit}}">{{.Value}}{{if eq .Suit "Spades"}}♠️{{else if eq .Suit "Diamonds"}}♦️{{else if eq .Suit "Clubs"}}♣️{{else if eq .Suit "Hearts"}}♥️{{end}}</div>
+                {{end}}
+            </div>
+            <!-- <p>CombinationID: {{.HandData.CombinationId}}</p>
+            <p>Player Hand: {{.HandData.PlayerHand}}</p> -->
+        </div>
+        {{end}}
+    </div>
 </body>
 </html>
