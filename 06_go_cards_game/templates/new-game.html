@@ -7,24 +7,31 @@
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    <div class="poker-table">
-        <div class="community-cards">
-            {{range .FaceUpCards}}
-                <div class="card {{.Suit}}">{{.Value}}{{if eq .Suit "Spades"}}♠️{{else if eq .Suit "Diamonds"}}♦️{{else if eq .Suit "Clubs"}}♣️{{else if eq .Suit "Hearts"}}♥️{{end}}</div>
-            {{end}}
-        </div>
-        {{range .Players}}
-        <div class="player player{{.PlayerId}}">
-            <div class="name">Player {{.PlayerId}}</div>
-            <div class="hand">
-                {{range .StartingHand}}
-                <div class="card {{.Suit}}">{{.Value}}{{if eq .Suit "Spades"}}♠️{{else if eq .Suit "Diamonds"}}♦️{{else if eq .Suit "Clubs"}}♣️{{else if eq .Suit "Hearts"}}♥️{{end}}</div>
+    <div class="container">
+        <div class="main-content">
+            <div class="poker-table">
+                <div class="community-cards">
+                    {{range .FaceUpCards}}
+                        <div class="card {{.Suit}}">{{.Value}}{{if eq .Suit "Spades"}}♠️{{else if eq .Suit "Diamonds"}}♦️{{else if eq .Suit "Clubs"}}♣️{{else if eq .Suit "Hearts"}}♥️{{end}}</div>
+                    {{end}}
+                </div>
+                {{range .Players}}
+                <div class="player player{{.PlayerId}}">
+                    <div class="name">Player {{.PlayerId}}</div>
+                    <div class="hand">
+                        {{range .StartingHand}}
+                        <div class="card {{.Suit}}">{{.Value}}{{if eq .Suit "Spades"}}♠️{{else if eq .Suit "Diamonds"}}♦️{{else if eq .Suit "Clubs"}}♣️{{else if eq .Suit "Hearts"}}♥️{{end}}</div>
+                        {{end}}
+                    </div>
+                    <!-- <p>CombinationID: {{.HandData.CombinationId}}</p>
+                    <p>Player Hand: {{.HandData.PlayerHand}}</p> -->
+                </div>
                 {{end}}
             </div>
-            <!-- <p>CombinationID: {{.HandData.CombinationId}}</p>
-            <p>Player Hand: {{.HandData.PlayerHand}}</p> -->
         </div>
-        {{end}}
-    </div>
+        <div class="sidebar">
+            <p>Player Cards Here</p>
+        </div>
+    </div>  
 </body>
 </html>
