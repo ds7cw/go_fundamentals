@@ -30,7 +30,17 @@
             </div>
         </div>
         <div class="sidebar">
-            <p>Player Cards Here</p>
+            <h2>Winner(s)</h2>
+            {{range .Winners}}
+            <div class="winners">
+                <div class="winner">Player {{.PlayerId}}</div>
+                <div class="hand"><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+                    {{range .HandData.PlayerHand}}
+                    <div class="card {{.Suit}}">{{.Value}}{{if eq .Suit "Spades"}}♠️{{else if eq .Suit "Diamonds"}}♦️{{else if eq .Suit "Clubs"}}♣️{{else if eq .Suit "Hearts"}}♥️{{end}}</div>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
         </div>
     </div>  
 </body>

@@ -8,47 +8,6 @@ import (
 )
 
 func main() {
-	cards := newDeck()
-	cards.shuffle()
-	cards.print()
-
-	playersCount := getPlayerCount()
-	fmt.Println("\nPlayers Count:", playersCount)
-
-	playersSlice := createPlayers(playersCount)
-
-	playersSlice, cards = dealToPlayers(playersSlice, cards)
-	printPlayersHands(playersSlice)
-
-	flop, cards := dealFlop(cards)
-	turn, cards := dealTurn(cards)
-	river, cards := dealRiver(cards)
-	communityCards := slices.Concat(flop, turn, river)
-
-	fmt.Println("\nCommunity Cards:\n", communityCards)
-	fmt.Println("\nRemaining Cards in Deck:", len(cards))
-
-	// Evaluate all players' hands
-	for i, pc := range playersSlice {
-		currentPlayerCards := slices.Concat(communityCards, pc.StartingHand)
-		playersSlice[i].HandData = currentPlayerCards.evaluateHand()
-		fmt.Println("Player", playersSlice[i].PlayerId,
-			"ComboID:", playersSlice[i].HandData.CombinationId,
-			"Hand:", playersSlice[i].HandData.PlayerHand)
-	}
-
-	// Determine winners
-	winningPlayersIdx := determineWinner(playersSlice)
-	// Print winning hand(s)
-	for _, n := range winningPlayersIdx {
-		cpd := playersSlice[n]
-		fmt.Println(
-			"Winner:", cpd.PlayerId,
-			"ComboID:", cpd.HandData.CombinationId,
-			"Cards:", cpd.HandData.PlayerHand,
-		)
-	}
-
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/new-game", gameHandleFunc)
 	http.ListenAndServe(":8080", nil)
@@ -58,7 +17,7 @@ func main() {
 type TemplateContext struct {
 	Players     []PlayerData
 	FaceUpCards Deck
-	Winners     []int
+	Winners     []PlayerData
 }
 
 func gameHandleFunc(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +42,10 @@ func gameHandleFunc(w http.ResponseWriter, r *http.Request) {
 			"Hand:", playersSlice[i].HandData.PlayerHand)
 	}
 
-	ctx := TemplateContext{Players: playersSlice, FaceUpCards: communityCards}
+	winningIdxs := DetermineWinner(playersSlice)
+	winningPlayers := GetWinners(playersSlice, winningIdxs)
+
+	ctx := TemplateContext{Players: playersSlice, FaceUpCards: communityCards, Winners: winningPlayers}
 	tmpl := template.Must(template.ParseFiles("templates/new-game.html"))
 	tmpl.Execute(w, ctx)
 
