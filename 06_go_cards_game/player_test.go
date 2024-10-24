@@ -211,7 +211,7 @@ func TestDetermineWinner(t *testing.T) {
 		},
 	}
 
-	winners := determineWinner(playerSlice)
+	winners := DetermineWinner(playerSlice)
 	expected := []int{1, 2}
 
 	if len(winners) != len(expected) {

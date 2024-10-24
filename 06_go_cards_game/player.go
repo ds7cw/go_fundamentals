@@ -80,7 +80,7 @@ func compareHands(s []PlayerData, p1idx int, p2idx int) int {
 }
 
 // Returns a slice of indices associated with the best hand(s).
-func determineWinner(s []PlayerData) []int {
+func DetermineWinner(s []PlayerData) []int {
 	winners := []int{}
 	highestScore := 0
 
@@ -98,4 +98,12 @@ func determineWinner(s []PlayerData) []int {
 		}
 	}
 	return winners
+}
+
+func GetWinners(s []PlayerData, idxs []int) []PlayerData {
+	winnersData := []PlayerData{}
+	for _, idx := range idxs {
+		winnersData = append(winnersData, s[idx])
+	}
+	return winnersData
 }
