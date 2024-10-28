@@ -21,9 +21,9 @@ body {
 }
 
 .poker-table {
-    width: 75%; /* Adjust size as needed */
-    height: 85%; /* Adjust size as needed */
-    background: radial-gradient(circle at center, #008000, #004d00);
+    width: 75%;
+    height: 85%;
+    background: radial-gradient(circle at center, #008000, #003800);
     border-radius: 50%;
     padding: 20px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
@@ -62,7 +62,7 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgb(0, 0, 0);
     font-size: 1.5em;
 }
  
@@ -98,4 +98,20 @@ body {
  
 .name {
     margin-bottom: 5px;
+}
+
+.main-content .new-game button {
+    background-color: #008000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.main-content .new-game button:hover {
+    background-color: #004d00;
 }
