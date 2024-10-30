@@ -15,4 +15,5 @@ This is a poker simulator app, written in Go. The logic follows the rules of 2-C
 	"strconv"
 	"strings"
 	"time"	
-	
+## UML Diagram
+![image](https://github.com/user-attachments/assets/7e9df7b8-1e20-441f-8e9d-478690602eab)
